@@ -4,11 +4,12 @@ import generateToken from "../utils/generateToken.js";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 
-
 // REGISTER
 const registerUser = async (req, res) => {
   try {
-    const { fullname, email, password } = req.body;
+    const fullname = req.body?.fullname?.trim();
+    const email = req.body?.email?.trim().toLowerCase();
+    const password = req.body?.password;
 
     if (!fullname || !email || !password) {
       return res.status(400).json({
@@ -20,12 +21,11 @@ const registerUser = async (req, res) => {
 
     if (userExists) {
       return res.status(400).json({
-        message: "User already exists",
+        message: "Account already exists",
       });
     }
 
     const salt = await bcrypt.genSalt(10);
-
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = await User.create({
@@ -35,56 +35,62 @@ const registerUser = async (req, res) => {
     });
 
     if (user) {
-      res.status(201).json({
+      return res.status(201).json({
         _id: user._id,
         fullname: user.fullname,
         email: user.email,
         token: generateToken(user._id),
       });
     }
+
+    return res.status(400).json({
+      message: "Invalid user data",
+    });
   } catch (error) {
-    res.status(500).json({
+    if (error?.code === 11000) {
+      return res.status(400).json({
+        message: "Account already exists",
+      });
+    }
+
+    return res.status(500).json({
       message: error.message,
     });
   }
 };
-
 
 // LOGIN
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = req.body?.email?.trim().toLowerCase();
+    const password = req.body?.password;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
 
-    if (
-      user &&
-      (await bcrypt.compare(password, user.password))
-    ) {
-      res.json({
+    if (user && (await bcrypt.compare(password, user.password))) {
+      return res.json({
         _id: user._id,
         fullname: user.fullname,
         email: user.email,
         token: generateToken(user._id),
       });
-    } else {
-      res.status(401).json({
-        message: "Invalid email or password",
-      });
     }
+
+    return res.status(401).json({
+      message: "Invalid email or password",
+    });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: error.message,
     });
   }
 };
-
 
 // FORGOT PASSWORD
 const forgotPassword = async (req, res) => {
   try {
     const user = await User.findOne({
-      email: req.body.email,
+      email: req.body?.email?.trim().toLowerCase(),
     });
 
     if (!user) {
@@ -96,7 +102,6 @@ const forgotPassword = async (req, res) => {
     const resetToken = crypto.randomBytes(20).toString("hex");
 
     user.resetPasswordToken = resetToken;
-
     user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
 
     await user.save();
@@ -120,16 +125,15 @@ const forgotPassword = async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
-    res.json({
+    return res.json({
       message: "Reset email sent",
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: error.message,
     });
   }
 };
-
 
 // RESET PASSWORD
 const resetPassword = async (req, res) => {
@@ -147,33 +151,26 @@ const resetPassword = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
 
-    user.password = await bcrypt.hash(
-      req.body.password,
-      salt
-    );
-
+    user.password = await bcrypt.hash(req.body?.password, salt);
     user.resetPasswordToken = undefined;
-
     user.resetPasswordExpire = undefined;
 
     await user.save();
 
-    res.json({
+    return res.json({
       message: "Password reset successful",
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: error.message,
     });
   }
 };
 
-
 // PROFILE
 const getProfile = async (req, res) => {
-  res.json(req.user);
+  return res.json(req.user);
 };
-
 
 export {
   registerUser,
