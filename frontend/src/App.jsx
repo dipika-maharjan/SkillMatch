@@ -6,10 +6,13 @@ import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Dashboard from './pages/Dashboard'
 import ProtectedRoute from './routes/ProtectedRoute'
+import Home from './pages/Home'
 
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
