@@ -17,6 +17,12 @@ const registerUser = async (req, res) => {
       });
     }
 
+    if (password.length < 8) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters",
+      });
+    }
+
     const userExists = await User.findOne({ email });
 
     if (userExists) {
@@ -39,6 +45,7 @@ const registerUser = async (req, res) => {
         _id: user._id,
         fullname: user.fullname,
         email: user.email,
+        role: user.role,
         token: generateToken(user._id),
       });
     }
@@ -64,6 +71,19 @@ const loginUser = async (req, res) => {
   try {
     const email = req.body?.email?.trim().toLowerCase();
     const password = req.body?.password;
+    const emailPattern = /^\S+@\S+\.\S+$/;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Please fill all fields",
+      });
+    }
+
+    if (!emailPattern.test(email)) {
+      return res.status(400).json({
+        message: "Enter a valid email address",
+      });
+    }
 
     const user = await User.findOne({ email }).select("+password");
 
@@ -72,6 +92,7 @@ const loginUser = async (req, res) => {
         _id: user._id,
         fullname: user.fullname,
         email: user.email,
+        role: user.role,
         token: generateToken(user._id),
       });
     }
@@ -84,6 +105,13 @@ const loginUser = async (req, res) => {
       message: error.message,
     });
   }
+};
+
+// LOGOUT
+const logoutUser = async (req, res) => {
+  return res.json({
+    message: "Logged out successfully",
+  });
 };
 
 // FORGOT PASSWORD
@@ -149,6 +177,12 @@ const resetPassword = async (req, res) => {
       });
     }
 
+    if (!req.body?.password || req.body.password.length < 8) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters",
+      });
+    }
+
     const salt = await bcrypt.genSalt(10);
 
     user.password = await bcrypt.hash(req.body?.password, salt);
@@ -175,6 +209,7 @@ const getProfile = async (req, res) => {
 export {
   registerUser,
   loginUser,
+  logoutUser,
   forgotPassword,
   resetPassword,
   getProfile,
