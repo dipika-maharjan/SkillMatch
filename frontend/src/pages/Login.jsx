@@ -9,26 +9,16 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(() => {
+    return localStorage.getItem("rememberMe") === "true" && Boolean(localStorage.getItem("email"));
+  });
   const [feedback, setFeedback] = useState({ type: "", message: "" });
 
-  const [formData, setFormData] = useState({
-    email: "",
+  const [formData, setFormData] = useState(() => ({
+    email: localStorage.getItem("rememberMe") === "true" ? localStorage.getItem("email") || "" : "",
     password: "",
-  });
-
-  useEffect(() => {
-    const savedEmail = localStorage.getItem("email");
-    const savedRemember = localStorage.getItem("rememberMe") === "true";
-
-    if (savedRemember && savedEmail) {
-      setFormData((prev) => ({
-        ...prev,
-        email: savedEmail,
-      }));
-      setRememberMe(true);
-    }
-  }, []);
+  }));
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   useEffect(() => {
     if (!feedback.message) return;
@@ -53,6 +43,11 @@ export default function Login() {
 
     if (!formData.email.trim() || !formData.password.trim()) {
       setFeedback({ type: "error", message: "Please fill all fields." });
+      return;
+    }
+
+    if (!emailPattern.test(formData.email.trim())) {
+      setFeedback({ type: "error", message: "Enter a valid email address." });
       return;
     }
 
@@ -99,22 +94,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center px-3 py-4 sm:px-4 sm:py-6 lg:px-6">
-      <div className="w-full max-w-6xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
+    <div className="h-dvh overflow-hidden bg-slate-100 flex items-center justify-center px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
+      <div className="h-full w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:rounded-3xl">
 
-        <div className="grid min-h-[calc(100vh-2rem)] lg:min-h-[720px] lg:grid-cols-2">
+        <div className="grid h-full min-h-0 lg:grid-cols-2">
 
           {/* Left Section */}
-          <div className="hidden lg:flex items-center justify-center p-8 xl:p-10">
+          <div className="hidden min-h-0 lg:flex items-center justify-center p-6 xl:p-8">
             <img
               src={login}
               alt="Login illustration"
-              className="w-full max-w-[540px] xl:max-w-[600px] h-auto object-contain"
+              className="h-auto max-h-[calc(100dvh-6rem)] w-full max-w-[540px] object-contain xl:max-w-[600px]"
             />
           </div>
 
           {/* Right Section */}
-          <div className="relative flex items-center justify-center bg-[#f8faff] px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+          <div className="relative flex min-h-0 items-center justify-center overflow-hidden bg-[#f8faff] px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
 
             {/* Blur Background */}
             <div className="absolute right-0 bottom-0 h-40 w-40 sm:h-56 sm:w-56 rounded-full bg-blue-200/60 blur-3xl pointer-events-none" />
@@ -122,7 +117,7 @@ export default function Login() {
             <div className="relative z-10 w-full max-w-sm sm:max-w-md">
 
               {/* Header */}
-              <div className="mb-6 sm:mb-8">
+              <div className="mb-4 sm:mb-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-blue-700 mb-2">
                   SkillMatch
                 </h2>
@@ -137,10 +132,7 @@ export default function Login() {
               </div>
 
               {/* Form */}
-              <form
-                onSubmit={handleSubmit}
-                className="space-y-3 sm:space-y-4"
-              >
+              <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
 
                 {/* Email */}
                 <div>
@@ -216,7 +208,7 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading || !formData.email.trim() || !formData.password.trim()}
-                  className={`w-full text-white font-semibold py-3 px-4 rounded-lg transition duration-200 mt-6 shadow-sm ${
+                  className={`w-full text-white font-semibold py-3 px-4 rounded-lg transition duration-200 mt-4 sm:mt-6 shadow-sm ${
                     loading
                       ? "bg-blue-400 cursor-not-allowed"
                       : "bg-blue-700 hover:bg-blue-800"
@@ -241,7 +233,7 @@ export default function Login() {
               </form>
 
               {/* Register Link */}
-              <p className="text-center text-sm sm:text-base text-gray-600 mt-5 sm:mt-6">
+              <p className="text-center text-sm sm:text-base text-gray-600 mt-4 sm:mt-5">
                 Don't have an account?{" "}
 
                 <Link
