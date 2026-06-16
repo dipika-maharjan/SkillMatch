@@ -1,118 +1,228 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
+import { Search, Bell, User, ArrowRight, FileText } from "lucide-react";
+import API from "../services/api";
+
+const fallbackDashboard = {
+  user: { fullname: "User" },
+  stats: {
+    resumeScore: 85,
+    applications: 12,
+    recommendations: 4,
+    savedJobs: 8,
+  },
+  recommendations: [
+    { role: "UI/UX Designer", company: "DesignHub", location: "Lalitpur, Nepal", match: 90 },
+    { role: "Product Designer", company: "Tech Pvt. Ltd", location: "Kathmandu, Nepal", match: 88 },
+    { role: "Frontend Developer", company: "Techno Company", location: "Biratnagar, Nepal", match: 84 },
+  ],
+  skills: [
+    { skill: "Figma", percentage: 75 },
+    { skill: "Prototyping", percentage: 80 },
+    { skill: "UX Design", percentage: 70 },
+    { skill: "Web Development", percentage: 80 },
+  ],
+  resume: {
+    fileName: "User_Resume.pdf",
+  },
+};
 
 export default function Dashboard() {
-  const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const [dashboard, setDashboard] = useState(fallbackDashboard);
 
-  const handleLogout = async () => {
-    try {
-      await API.post("/auth/logout");
-    } finally {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("rememberMe");
-      localStorage.removeItem("email");
-      navigate("/login");
-    }
-  };
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const res = await API.get("/dashboard");
+        setDashboard(res.data);
+      } catch {
+        const savedUser = JSON.parse(localStorage.getItem("user") || "null");
+
+        if (savedUser) {
+          setDashboard((prev) => ({
+            ...prev,
+            user: savedUser,
+          }));
+        }
+      }
+    };
+
+    fetchDashboard();
+  }, []);
+
+  const { user, stats, recommendations, skills, resume } = dashboard;
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
-      
-      {/* Sidebar - fixed left */}
-      <div className="w-64 flex-shrink-0">
-        <Sidebar />
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 p-6 sm:p-8 lg:p-10">
-        
-        <div className="mx-auto w-full max-w-6xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
-
-          {/* Header */}
-          <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5 sm:px-8">
-            <div>
-              <p className="text-sm font-medium uppercase tracking-[0.24em] text-blue-700">
-                SkillMatch
-              </p>
-              <h1 className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl">
-                Dashboard
-              </h1>
+    <div className="flex">
+      <Sidebar />
+      <main className="flex-1 bg-gray-50 min-h-screen">
+        {/* Top Bar */}
+        <div className="bg-white border-b border-gray-200 px-8 py-4 sticky top-0 z-40">
+          <div className="flex items-center justify-between gap-4">
+            {/* Search Bar */}
+            <div className="flex-1 max-w-md">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search for jobs, skills, companies..."
+                  className="w-full pl-10 pr-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
             </div>
 
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-800"
-            >
-              Logout
-            </button>
+            {/* Right Icons */}
+            <div className="flex items-center gap-4">
+              <button className="relative p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition">
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              </button>
+              <button className="p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition">
+                <User className="w-5 h-5" />
+              </button>
+            </div>
           </div>
-
-          {/* Content */}
-          <div className="grid gap-6 px-6 py-6 sm:px-8 lg:grid-cols-[1.4fr_0.9fr] lg:gap-8 lg:py-8">
-            
-            <section className="rounded-2xl bg-slate-50 p-6 sm:p-8">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-700">
-                Welcome back
-              </p>
-
-              <h2 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">
-                {user?.fullname || user?.name || "User"}
-              </h2>
-
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-gray-600 sm:text-base">
-                Your SkillMatch account is active. Use this dashboard to explore jobs, manage your profile,
-                and continue with your application journey.
-              </p>
-
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  to="/register"
-                  className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:border-blue-300 hover:text-blue-700"
-                >
-                  Edit account
-                </Link>
-
-                <Link
-                  to="/forgot-password"
-                  className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:border-blue-300 hover:text-blue-700"
-                >
-                  Reset password
-                </Link>
-              </div>
-            </section>
-
-            {/* Right Panel */}
-            <aside className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-              
-              <div className="rounded-2xl border border-slate-200 p-5">
-                <p className="text-sm font-semibold text-gray-500">Account Email</p>
-                <p className="mt-2 break-all text-base font-semibold text-gray-900">
-                  {user?.email || "Not available"}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 p-5">
-                <p className="text-sm font-semibold text-gray-500">Status</p>
-                <p className="mt-2 text-base font-semibold text-emerald-600">
-                  Logged in
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 p-5 sm:col-span-2 lg:col-span-1">
-                <p className="text-sm font-semibold text-gray-500">Next step</p>
-                <p className="mt-2 text-sm leading-6 text-gray-600">
-                  Continue building your profile and job preferences to improve recommendations.
-                </p>
-              </div>
-
-            </aside>
-          </div>
-
         </div>
-      </div>
+
+        {/* Main Content */}
+        <div className="px-6 sm:px-8 py-8">
+          {/* Welcome Section */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Welcome back, {user?.fullname || "User"}
+            </h1>
+            <p className="text-gray-600 text-sm">
+              Here's what's happening with your profile today
+            </p>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="bg-white rounded-lg p-6 shadow-sm">
+              <p className="text-4xl font-bold text-gray-900 mb-2">{stats.resumeScore}%</p>
+              <p className="text-gray-600 text-sm">Resume Score</p>
+            </div>
+            <div className="bg-white rounded-lg p-6 shadow-sm">
+              <p className="text-4xl font-bold text-gray-900 mb-2">{stats.applications}</p>
+              <p className="text-gray-600 text-sm">Applications</p>
+            </div>
+            <div className="bg-white rounded-lg p-6 shadow-sm">
+              <p className="text-4xl font-bold text-gray-900 mb-2">{stats.recommendations}</p>
+              <p className="text-gray-600 text-sm">Recommendations</p>
+            </div>
+            <div className="bg-white rounded-lg p-6 shadow-sm">
+              <p className="text-4xl font-bold text-gray-900 mb-2">{stats.savedJobs}</p>
+              <p className="text-gray-600 text-sm">Saved Jobs</p>
+            </div>
+          </div>
+
+          {/* Content Grid */}
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Left Column - Top Job Matches */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h2 className="text-xl font-bold text-gray-900 mb-6">
+                  Top Job Matches
+                </h2>
+
+                <div className="space-y-5">
+                  {recommendations.map((job, index) => (
+                    <div key={`${job.role}-${job.company}`} className="border border-gray-200 rounded-lg p-5">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-start gap-4 flex-1">
+                          <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span className="text-indigo-600 font-bold text-sm">
+                              {job.company?.charAt(0) || index + 1}
+                            </span>
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-gray-900">
+                              {job.role}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {job.company}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {job.location}
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-sm font-semibold text-emerald-500">
+                          {job.match}% Match
+                        </span>
+                      </div>
+                      <button className="w-64 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2">
+                        <span>View Details</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <button className="mt-6 text-indigo-600 hover:text-indigo-700 font-semibold text-sm flex items-center gap-1">
+                  View all jobs
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Right Column - Profile Summary & Resume */}
+            <div className="space-y-6">
+              {/* Profile Summary */}
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h2 className="text-xl font-bold text-gray-900 mb-6">
+                  Profile Summary
+                </h2>
+
+                <div className="space-y-4">
+                  {skills.map((item) => (
+                    <div key={item.skill}>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-medium text-gray-900">
+                          {item.skill}
+                        </p>
+                        <p className="text-sm font-semibold text-indigo-600">
+                          {item.percentage}%
+                        </p>
+                      </div>
+                      <div className="w-64 bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-indigo-600 h-2 rounded-full"
+                          style={{ width: `${item.percentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <button className="mt-6 text-indigo-600 hover:text-indigo-700 font-semibold text-sm flex items-center gap-1">
+                  View full profile
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Resume Section */}
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                  Resume
+                </h2>
+
+                <div className="bg-gray-50 rounded-lg p-4 mb-4 flex items-center gap-3">
+                  <FileText className="w-5 h-5 text-gray-500" />
+                  <span className="text-sm font-medium text-gray-900">
+                    User_Resume.pdf
+                    {resume.fileName}
+                  </span>
+                </div>
+
+                <button className="w-64 border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 font-semibold py-2 rounded-lg transition">
+                  Update Resume
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
