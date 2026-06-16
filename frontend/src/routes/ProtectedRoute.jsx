@@ -16,7 +16,7 @@ export default function ProtectedRoute({ children }) {
 			try {
 				await API.get("/auth/profile");
 				setStatus("authenticated");
-			} catch (error) {
+			} catch {
 				localStorage.removeItem("token");
 				localStorage.removeItem("user");
 				setStatus("unauthenticated");

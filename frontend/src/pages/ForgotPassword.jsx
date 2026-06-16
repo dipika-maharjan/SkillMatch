@@ -56,12 +56,12 @@ export default function ForgotPassword() {
   const isDisabled = loading || !email.trim();
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center px-3 py-4 sm:px-4 sm:py-6 lg:px-6">
-      <div className="w-full max-w-6xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
-        <div className="grid min-h-[calc(100vh-2rem)] lg:min-h-[720px] lg:grid-cols-2">
-          <div className="hidden lg:flex items-center justify-center p-8 xl:p-10 bg-white">
+    <div className="h-dvh overflow-hidden bg-slate-100 flex items-center justify-center px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
+      <div className="h-full w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:rounded-3xl">
+        <div className="grid h-full min-h-0 lg:grid-cols-2">
+          <div className="hidden min-h-0 lg:flex items-center justify-center p-6 xl:p-8 bg-white">
             <div className="max-w-md text-left">
-              <h1 className="text-5xl font-bold text-blue-700 leading-tight mb-6">
+              <h1 className="text-4xl font-bold text-blue-700 leading-tight mb-5 xl:text-5xl xl:mb-6">
                 Reset your password
               </h1>
               <p className="text-gray-600 text-lg leading-8">
@@ -70,10 +70,10 @@ export default function ForgotPassword() {
             </div>
           </div>
 
-          <div className="relative flex items-center justify-center bg-[#f8faff] px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+          <div className="relative flex min-h-0 items-center justify-center overflow-hidden bg-[#f8faff] px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
             <div className="absolute right-0 bottom-0 h-40 w-40 sm:h-56 sm:w-56 rounded-full bg-blue-200/60 blur-3xl pointer-events-none" />
             <div className="relative z-10 w-full max-w-sm sm:max-w-md">
-              <div className="mb-6 sm:mb-8">
+              <div className="mb-4 sm:mb-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-blue-700 mb-2">
                   SkillMatch
                 </h2>
@@ -119,7 +119,7 @@ export default function ForgotPassword() {
                 )}
               </form>
 
-              <p className="mt-5 text-center text-sm text-gray-600">
+              <p className="mt-4 sm:mt-5 text-center text-sm text-gray-600">
                 Back to{" "}
                 <Link to="/login" className="font-medium text-blue-600 hover:underline">
                   Login

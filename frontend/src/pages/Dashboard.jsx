@@ -5,12 +5,16 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user") || "null");
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("rememberMe");
-    localStorage.removeItem("email");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await API.post("/auth/logout");
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      localStorage.removeItem("rememberMe");
+      localStorage.removeItem("email");
+      navigate("/login");
+    }
   };
 
   return (

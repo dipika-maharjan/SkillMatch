@@ -94,22 +94,22 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center px-3 py-4 sm:px-4 sm:py-6 lg:px-6">
-      <div className="w-full max-w-6xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
+    <div className="h-dvh overflow-hidden bg-slate-100 flex items-center justify-center px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
+      <div className="h-full w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:rounded-3xl">
 
-        <div className="grid min-h-[calc(100vh-2rem)] lg:min-h-[720px] lg:grid-cols-2">
+        <div className="grid h-full min-h-0 lg:grid-cols-2">
 
           {/* Left Section */}
-          <div className="hidden lg:flex items-center justify-center p-8 xl:p-10">
+          <div className="hidden min-h-0 lg:flex items-center justify-center p-6 xl:p-8">
             <img
               src={register}
               alt="Registration illustration"
-              className="w-full max-w-[540px] xl:max-w-[600px] h-auto object-contain"
+              className="h-auto max-h-[calc(100dvh-6rem)] w-full max-w-[540px] object-contain xl:max-w-[600px]"
             />
           </div>
 
           {/* Right Section */}
-          <div className="relative flex items-center justify-center bg-[#f8faff] px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+          <div className="relative flex min-h-0 items-center justify-center overflow-hidden bg-[#f8faff] px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
 
             {/* Blur Background */}
             <div className="absolute right-0 bottom-0 h-40 w-40 sm:h-56 sm:w-56 rounded-full bg-blue-200/60 blur-3xl pointer-events-none" />
@@ -117,12 +117,12 @@ export default function Register() {
             <div className="relative z-10 w-full max-w-sm sm:max-w-md">
 
               {/* Header */}
-              <div className="mb-5 sm:mb-7">
+              <div className="mb-3 sm:mb-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-blue-700 mb-2">
                   SkillMatch
                 </h2>
 
-                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 sm:mb-3">
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1.5 sm:mb-3">
                   Create your account
                 </h3>
 
@@ -132,10 +132,7 @@ export default function Register() {
               </div>
 
               {/* Form */}
-              <form
-                onSubmit={handleSubmit}
-                className="space-y-3 sm:space-y-4"
-              >
+              <form onSubmit={handleSubmit} className="space-y-2 sm:space-y-4">
 
                 {/* Full Name */}
                 <div>
@@ -146,7 +143,7 @@ export default function Register() {
                     value={formData.fullname}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 text-gray-900 bg-white"
+                    className="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 text-gray-900 bg-white"
                   />
                 </div>
 
@@ -159,7 +156,7 @@ export default function Register() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 text-gray-900 bg-white"
+                    className="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 text-gray-900 bg-white"
                   />
                 </div>
 
@@ -172,7 +169,7 @@ export default function Register() {
                     value={formData.password}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 text-gray-900 pr-10 bg-white"
+                    className="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 text-gray-900 pr-10 bg-white"
                   />
 
                   <button
@@ -229,7 +226,7 @@ export default function Register() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`w-full text-white font-semibold py-3 px-4 rounded-lg transition duration-200 mt-4 shadow-sm ${
+                  className={`w-full text-white font-semibold py-2.5 px-4 rounded-lg transition duration-200 mt-2 shadow-sm sm:py-3 sm:mt-4 ${
                     loading
                       ? "bg-blue-400 cursor-not-allowed"
                       : "bg-blue-700 hover:bg-blue-700"
@@ -254,7 +251,7 @@ export default function Register() {
               </form>
 
               {/* Login Link */}
-              <p className="text-center text-sm sm:text-base text-gray-600 mt-4 sm:mt-5">
+              <p className="text-center text-sm sm:text-base text-gray-600 mt-2 sm:mt-5">
                 Already have an account?{" "}
 
                 <Link
