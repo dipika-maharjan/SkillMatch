@@ -1,12 +1,14 @@
-import './App.css'
-import { Navigate, Route, Routes } from 'react-router-dom'
-import Register from './pages/Register'
-import Login from './pages/Login'
-import ForgotPassword from './pages/ForgotPassword'
-import ResetPassword from './pages/ResetPassword'
-import Dashboard from './pages/Dashboard'
-import ProtectedRoute from './routes/ProtectedRoute'
-import Home from './pages/Home'
+import "./App.css";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import Dashboard from "./pages/Dashboard";
+import Jobs from "./pages/Jobs";
+import JobDetails from "./pages/JobDetails";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -25,9 +27,25 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/jobs"
+        element={
+          <ProtectedRoute>
+            <Jobs />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/jobs/:id"
+        element={
+          <ProtectedRoute>
+            <JobDetails />
+          </ProtectedRoute>
+        }
+      />
       <Route path="*" element={<Navigate to="/register" replace />} />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;
