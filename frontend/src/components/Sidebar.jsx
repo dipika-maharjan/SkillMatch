@@ -14,7 +14,7 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
 
   const menuItems = [
     { label: "Dashboard", href: "/dashboard", icon: Home },
-    { label: "Jobs", href: "/dashboard#jobs", icon: Briefcase },
+    { label: "Jobs", href: "/jobs", icon: Briefcase },
     { label: "Applications", href: "/dashboard#applications", icon: FileText },
     { label: "Saved Jobs", href: "/dashboard#saved-jobs", icon: Bookmark },
     { label: "Resume", href: "/dashboard#resume", icon: Edit },
@@ -83,9 +83,7 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
         </nav>
 
         <div className="border-t border-gray-200 px-4 py-6">
-          <p className="text-center text-xs text-gray-500">
-            © 2026 SkillMatch
-          </p>
+          <p className="text-center text-xs text-gray-500">© 2026 SkillMatch</p>
         </div>
       </aside>
     </>

@@ -46,6 +46,7 @@ const getJobs = async (req, res) => {
       category,
       minSalary,
       maxSalary,
+      sortBy,
       page = 1,
       limit = 10,
     } = req.query;
@@ -85,8 +86,17 @@ const getJobs = async (req, res) => {
     const pageSize = Number(limit);
     const skip = (pageNumber - 1) * pageSize;
 
+    let sortOption = { createdAt: -1 };
+    if (sortBy === "latest") {
+      sortOption = { createdAt: -1 };
+    } else if (sortBy === "relevant") {
+      sortOption = { createdAt: -1 };
+    } else if (sortBy === "match") {
+      sortOption = { salaryMax: -1 };
+    }
+
     const [jobs, totalJobs] = await Promise.all([
-      Job.find(filters).sort({ createdAt: -1 }).skip(skip).limit(pageSize),
+      Job.find(filters).sort(sortOption).skip(skip).limit(pageSize),
       Job.countDocuments(filters),
     ]);
 
