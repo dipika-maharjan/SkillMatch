@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { Search, Bell, User, ArrowRight, FileText } from "lucide-react";
+import { Search, Bell, User, ArrowRight, FileText, Menu } from "lucide-react";
 import API from "../services/api";
 
 const fallbackDashboard = {
@@ -12,9 +12,24 @@ const fallbackDashboard = {
     savedJobs: 8,
   },
   recommendations: [
-    { role: "UI/UX Designer", company: "DesignHub", location: "Lalitpur, Nepal", match: 90 },
-    { role: "Product Designer", company: "Tech Pvt. Ltd", location: "Kathmandu, Nepal", match: 88 },
-    { role: "Frontend Developer", company: "Techno Company", location: "Biratnagar, Nepal", match: 84 },
+    {
+      role: "UI/UX Designer",
+      company: "DesignHub",
+      location: "Lalitpur, Nepal",
+      match: 90,
+    },
+    {
+      role: "Product Designer",
+      company: "Tech Pvt. Ltd",
+      location: "Kathmandu, Nepal",
+      match: 88,
+    },
+    {
+      role: "Frontend Developer",
+      company: "Techno Company",
+      location: "Biratnagar, Nepal",
+      match: 84,
+    },
   ],
   skills: [
     { skill: "Figma", percentage: 75 },
@@ -29,15 +44,38 @@ const fallbackDashboard = {
 
 export default function Dashboard() {
   const [dashboard, setDashboard] = useState(fallbackDashboard);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchDashboard = async () => {
-      try {
-        const res = await API.get("/dashboard");
-        setDashboard(res.data);
-      } catch {
-        const savedUser = JSON.parse(localStorage.getItem("user") || "null");
+      const savedUser = JSON.parse(localStorage.getItem("user") || "null");
 
+      if (savedUser) {
+        setDashboard((prev) => ({
+          ...prev,
+          user: savedUser,
+        }));
+      }
+
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          return;
+        }
+
+        const res = await API.get("/dashboard");
+
+        setDashboard((prev) => ({
+          ...prev,
+          ...res.data,
+          user: res.data.user || prev.user,
+          stats: { ...prev.stats, ...res.data.stats },
+          recommendations: res.data.recommendations || prev.recommendations,
+          skills: res.data.skills || prev.skills,
+          resume: { ...prev.resume, ...res.data.resume },
+        }));
+      } catch {
         if (savedUser) {
           setDashboard((prev) => ({
             ...prev,
@@ -54,11 +92,20 @@ export default function Dashboard() {
 
   return (
     <div className="flex">
-      <Sidebar />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <main className="flex-1 bg-gray-50 min-h-screen">
         {/* Top Bar */}
         <div className="bg-white border-b border-gray-200 px-8 py-4 sticky top-0 z-40">
           <div className="flex items-center justify-between gap-4">
+            <button
+              type="button"
+              aria-label="Open navigation menu"
+              onClick={() => setSidebarOpen(true)}
+              className="inline-flex items-center rounded-lg border border-gray-200 p-2 text-gray-700 hover:bg-gray-100 lg:hidden"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+
             {/* Search Bar */}
             <div className="flex-1 max-w-md">
               <div className="relative">
@@ -99,19 +146,27 @@ export default function Dashboard() {
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <p className="text-4xl font-bold text-gray-900 mb-2">{stats.resumeScore}%</p>
+              <p className="text-4xl font-bold text-gray-900 mb-2">
+                {stats.resumeScore}%
+              </p>
               <p className="text-gray-600 text-sm">Resume Score</p>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <p className="text-4xl font-bold text-gray-900 mb-2">{stats.applications}</p>
+              <p className="text-4xl font-bold text-gray-900 mb-2">
+                {stats.applications}
+              </p>
               <p className="text-gray-600 text-sm">Applications</p>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <p className="text-4xl font-bold text-gray-900 mb-2">{stats.recommendations}</p>
+              <p className="text-4xl font-bold text-gray-900 mb-2">
+                {stats.recommendations}
+              </p>
               <p className="text-gray-600 text-sm">Recommendations</p>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <p className="text-4xl font-bold text-gray-900 mb-2">{stats.savedJobs}</p>
+              <p className="text-4xl font-bold text-gray-900 mb-2">
+                {stats.savedJobs}
+              </p>
               <p className="text-gray-600 text-sm">Saved Jobs</p>
             </div>
           </div>
@@ -127,7 +182,10 @@ export default function Dashboard() {
 
                 <div className="space-y-5">
                   {recommendations.map((job, index) => (
-                    <div key={`${job.role}-${job.company}`} className="border border-gray-200 rounded-lg p-5">
+                    <div
+                      key={`${job.role}-${job.company}`}
+                      className="border border-gray-200 rounded-lg p-5"
+                    >
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-start gap-4 flex-1">
                           <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -203,15 +261,12 @@ export default function Dashboard() {
 
               {/* Resume Section */}
               <div className="bg-white rounded-lg p-6 shadow-sm">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">
-                  Resume
-                </h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Resume</h2>
 
                 <div className="bg-gray-50 rounded-lg p-4 mb-4 flex items-center gap-3">
                   <FileText className="w-5 h-5 text-gray-500" />
                   <span className="text-sm font-medium text-gray-900">
-                    User_Resume.pdf
-                    {resume.fileName}
+                    {resume?.fileName || "No resume uploaded yet"}
                   </span>
                 </div>
 
