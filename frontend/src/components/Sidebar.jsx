@@ -16,7 +16,7 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
     { label: "Dashboard", href: "/dashboard", icon: Home },
     { label: "Jobs", href: "/jobs", icon: Briefcase },
     { label: "Applications", href: "/my-applications", icon: FileText },
-    { label: "Saved Jobs", href: "/dashboard#saved-jobs", icon: Bookmark },
+    { label: "Saved Jobs", href: "/saved-jobs", icon: Bookmark },
     { label: "Resume", href: "/dashboard#resume", icon: Edit },
     { label: "Settings", href: "/dashboard#settings", icon: Settings },
   ];
