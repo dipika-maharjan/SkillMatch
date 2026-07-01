@@ -1,7 +1,7 @@
 import Sidebar from "../components/Sidebar";
 import { Link } from "react-router-dom";
 import { Search, Sliders, MapPin, Clock, Bookmark } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import API from "../services/api";
 
 const categoryOptions = [
@@ -31,6 +31,7 @@ export default function Jobs() {
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState("");
   const [jobs, setJobs] = useState([]);
+  const [savedJobIds, setSavedJobIds] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState("");
@@ -92,6 +93,19 @@ export default function Jobs() {
 
     loadJobs();
   }, [search, activeWorkType, page, sortBy]);
+
+  useEffect(() => {
+    const loadSavedIds = async () => {
+      try {
+        const response = await API.get("/saved-jobs/ids");
+        setSavedJobIds(response.data.jobIds || []);
+      } catch (err) {
+        // ignore saved id load failure for now
+      }
+    };
+
+    loadSavedIds();
+  }, []);
 
   return (
     <div className="flex">
@@ -335,19 +349,40 @@ export default function Jobs() {
                           <h3 className="text-lg font-bold text-gray-900 truncate">
                             {job.title}
                           </h3>
-                          <div className="flex items-center gap-3">
-                            <div className="text-center">
-                              <p className="text-lg font-bold text-emerald-500">
-                                {job.match || "0%"}
-                              </p>
-                              <p className="text-xs text-gray-500 font-semibold">
-                                MATCH
-                              </p>
-                            </div>
-                            <button className="p-2 text-gray-400 hover:text-gray-600 transition">
-                              <Bookmark className="w-5 h-5" />
-                            </button>
+                          <div className="text-center">
+                            <p className="text-lg font-bold text-emerald-500">
+                              {job.match || "0%"}
+                            </p>
+                            <p className="text-xs text-gray-500 font-semibold">
+                              MATCH
+                            </p>
                           </div>
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              try {
+                                const isSaved = savedJobIds.includes(job._id);
+                                if (isSaved) {
+                                  await API.delete(`/saved-jobs/${job._id}`);
+                                  setSavedJobIds((ids) =>
+                                    ids.filter((id) => id !== job._id),
+                                  );
+                                } else {
+                                  await API.post(`/saved-jobs/${job._id}`);
+                                  setSavedJobIds((ids) => [...ids, job._id]);
+                                }
+                              } catch (err) {
+                                console.error("Save toggle failed", err);
+                              }
+                            }}
+                            className={`p-2 rounded-lg transition ${
+                              savedJobIds.includes(job._id)
+                                ? "bg-indigo-600 text-white"
+                                : "text-gray-400 hover:text-gray-600 bg-white"
+                            }`}
+                          >
+                            <Bookmark className="w-5 h-5" />
+                          </button>
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4 text-sm text-gray-600 mb-3">

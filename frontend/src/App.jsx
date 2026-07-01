@@ -7,6 +7,10 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Jobs from "./pages/Jobs";
 import JobDetails from "./pages/JobDetails";
+import Apply from "./pages/Apply";
+import CompanyDetail from "./pages/CompanyDetail";
+import MyApplications from "./pages/MyApplications";
+import SavedJobs from "./pages/SavedJobs";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Home from "./pages/Home";
 
@@ -40,6 +44,38 @@ function App() {
         element={
           <ProtectedRoute>
             <JobDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/apply/:jobId"
+        element={
+          <ProtectedRoute>
+            <Apply />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-applications"
+        element={
+          <ProtectedRoute>
+            <MyApplications />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/saved-jobs"
+        element={
+          <ProtectedRoute>
+            <SavedJobs />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/company/:company"
+        element={
+          <ProtectedRoute>
+            <CompanyDetail />
           </ProtectedRoute>
         }
       />
