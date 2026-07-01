@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, MapPin, Clock, Briefcase } from "lucide-react";
+import { ArrowLeft, MapPin, Clock, Briefcase, Send } from "lucide-react";
 import API from "../services/api";
 
 export default function JobDetails() {
   const { id } = useParams();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [applying, setApplying] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   useEffect(() => {
     const fetchJob = async () => {
       setLoading(true);
       setError("");
+      setSuccess("");
 
       try {
         const response = await API.get(`/jobs/${id}`);
@@ -30,6 +33,33 @@ export default function JobDetails() {
 
     fetchJob();
   }, [id]);
+
+  const handleApply = async () => {
+    if (!job) return;
+
+    setApplying(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const savedUser = JSON.parse(localStorage.getItem("user") || "null");
+      const payload = {
+        userSkills: savedUser?.skills || ["react", "javascript", "ui"],
+        resumeText: savedUser?.summary || "",
+      };
+
+      await API.post(`/applications/jobs/${job._id}/apply`, payload);
+      setSuccess("Application submitted successfully.");
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to apply for this job",
+      );
+    } finally {
+      setApplying(false);
+    }
+  };
 
   return (
     <div className="flex">
@@ -103,6 +133,36 @@ export default function JobDetails() {
               </div>
 
               <div className="space-y-6">
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={handleApply}
+                    disabled={applying}
+                    className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    <Send className="w-4 h-4" />
+                    {applying ? "Applying..." : "Apply Now"}
+                  </button>
+                  <Link
+                    to="/my-applications"
+                    className="inline-flex items-center rounded-full border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                  >
+                    View My Applications
+                  </Link>
+                </div>
+
+                {error && (
+                  <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {error}
+                  </div>
+                )}
+
+                {success && (
+                  <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                    {success}
+                  </div>
+                )}
+
                 <section className="space-y-4">
                   <h2 className="text-xl font-semibold text-gray-900">
                     Job Description

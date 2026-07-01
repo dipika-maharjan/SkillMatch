@@ -7,6 +7,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Jobs from "./pages/Jobs";
 import JobDetails from "./pages/JobDetails";
+import MyApplications from "./pages/MyApplications";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Home from "./pages/Home";
 
@@ -40,6 +41,14 @@ function App() {
         element={
           <ProtectedRoute>
             <JobDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-applications"
+        element={
+          <ProtectedRoute>
+            <MyApplications />
           </ProtectedRoute>
         }
       />
