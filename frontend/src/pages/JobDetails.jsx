@@ -206,6 +206,12 @@ export default function JobDetail() {
               {savedJobIds.includes(job._id) ? "Saved" : "Save"}
             </button>
             <button
+              onClick={() => navigate(`/resume-analysis?jobId=${job._id}`)}
+              className="flex items-center gap-2 px-6 py-2.5 border-2 border-cyan-200 bg-cyan-50 text-cyan-700 font-semibold rounded-lg transition hover:bg-cyan-100"
+            >
+              Resume Match
+            </button>
+            <button
               onClick={() => navigate(`/apply/${job._id}`)}
               className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition"
             >

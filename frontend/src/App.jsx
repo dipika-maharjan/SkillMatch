@@ -11,6 +11,8 @@ import Apply from "./pages/Apply";
 import CompanyDetail from "./pages/CompanyDetail";
 import MyApplications from "./pages/MyApplications";
 import SavedJobs from "./pages/SavedJobs";
+import Resume from "./pages/Resume";
+import ResumeAnalysis from "./pages/ResumeAnalysis";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Home from "./pages/Home";
 
@@ -68,6 +70,22 @@ function App() {
         element={
           <ProtectedRoute>
             <SavedJobs />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/resume"
+        element={
+          <ProtectedRoute>
+            <Resume />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/resume-analysis"
+        element={
+          <ProtectedRoute>
+            <ResumeAnalysis />
           </ProtectedRoute>
         }
       />

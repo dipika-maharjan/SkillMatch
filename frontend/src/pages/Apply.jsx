@@ -10,6 +10,7 @@ import {
   UserCheck,
 } from "lucide-react";
 import API from "../services/api";
+import { getResume } from "../services/api";
 
 export default function Apply() {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ export default function Apply() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [application, setApplication] = useState(null);
+  const [resume, setResume] = useState(null);
 
   const steps = [
     { number: 1, label: "Application Info" },
@@ -31,14 +33,19 @@ export default function Apply() {
   ];
 
   useEffect(() => {
-    const fetchJob = async () => {
+    const fetchApplicationData = async () => {
       if (!jobId) return;
       setLoading(true);
       setError("");
 
       try {
-        const response = await API.get(`/jobs/${jobId}`);
-        setJob(response.data);
+        const [jobResponse, resumeResponse] = await Promise.all([
+          API.get(`/jobs/${jobId}`),
+          getResume().catch(() => null),
+        ]);
+
+        setJob(jobResponse.data);
+        setResume(resumeResponse?.data || null);
       } catch (err) {
         setError(
           err.response?.data?.message ||
@@ -50,19 +57,19 @@ export default function Apply() {
       }
     };
 
-    fetchJob();
+    fetchApplicationData();
   }, [jobId]);
 
   const reviewFields = useMemo(
     () => [
       { label: "Job", value: job?.title || "Loading..." },
       { label: "Company", value: job?.company || "Loading..." },
-      { label: "Resume", value: "User_Resume.pdf" },
+      { label: "Resume", value: resume?.fileName || "No resume uploaded" },
       { label: "Cover Letter", value: coverLetter || "Not provided" },
       { label: "Portfolio", value: portfolio || "Not provided" },
       { label: "LinkedIn", value: linkedin || "Not provided" },
     ],
-    [job, coverLetter, portfolio, linkedin],
+    [job, resume, coverLetter, portfolio, linkedin],
   );
 
   const handleSubmit = async () => {
@@ -70,11 +77,17 @@ export default function Apply() {
     setSubmitting(true);
 
     try {
+      if (!resume) {
+        setError("Upload a resume first before submitting this application.");
+        setSubmitting(false);
+        return;
+      }
+
       const response = await API.post(`/applications/jobs/${jobId}/apply`, {
         coverLetter,
-        resumeUrl: "User_Resume.pdf",
-        userSkills: [],
-        resumeText: "",
+        resumeUrl: resume.fileUrl || "",
+        userSkills: resume.skills || [],
+        resumeText: resume.rawText || "",
       });
       setApplication(response.data);
       setCurrentStep(3);
@@ -196,11 +209,14 @@ export default function Apply() {
                         <p className="text-sm font-semibold text-gray-900">
                           Resume selected
                         </p>
-                        <p className="text-sm text-gray-500">User_Resume.pdf</p>
+                        <p className="text-sm text-gray-500">
+                          {resume?.fileName || "No resume uploaded"}
+                        </p>
                       </div>
                     </div>
                     <p className="text-sm text-gray-600">
-                      Your latest resume will be attached to the application.
+                      Your latest saved resume will be attached to the
+                      application.
                     </p>
                   </div>
 

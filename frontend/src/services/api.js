@@ -15,4 +15,27 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
+// Resume endpoints
+export const uploadResume = (file) => {
+  const formData = new FormData();
+  formData.append("resume", file);
+  return API.post("/resume/upload", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
+
+export const getResumeAnalysis = (jobId) => {
+  return API.get("/resume/analysis", {
+    params: jobId ? { jobId } : {},
+  });
+};
+
+export const getResume = () => {
+  return API.get("/resume");
+};
+
+export const deleteResume = () => {
+  return API.delete("/resume");
+};
+
 export default API;
