@@ -1,5 +1,6 @@
 import Application from "../models/Application.js";
 import Job from "../models/Job.js";
+import Resume from "../models/Resume.js";
 
 const normalizeSkills = (skills = []) => {
   return (skills || [])
@@ -65,10 +66,23 @@ const createApplication = async (req, res) => {
         .json({ message: "You already applied to this job" });
     }
 
+    const storedResume = await Resume.findOne({
+      user: req.user._id,
+      isActive: true,
+    }).sort({
+      uploadedAt: -1,
+    });
+
+    const effectiveResumeUrl = resumeUrl || storedResume?.fileUrl || "";
+    const effectiveUserSkills = userSkills.length
+      ? userSkills
+      : storedResume?.skills || [];
+    const effectiveResumeText = resumeText || storedResume?.rawText || "";
+
     const matchScore = calculateMatchScore(
       job.skills || [],
-      userSkills,
-      resumeText,
+      effectiveUserSkills,
+      effectiveResumeText,
     );
 
     const application = await Application.create({
@@ -77,7 +91,7 @@ const createApplication = async (req, res) => {
       company: job.company,
       jobTitle: job.title,
       coverLetter,
-      resumeUrl,
+      resumeUrl: effectiveResumeUrl,
       matchScore,
     });
 
