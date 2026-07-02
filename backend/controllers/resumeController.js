@@ -447,6 +447,7 @@ const deleteResume = async (req, res) => {
 
     const filePath = path.join(
       process.cwd(),
+      "backend",
       "uploads",
       path.basename(resume.fileUrl || ""),
     );

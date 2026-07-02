@@ -14,7 +14,7 @@ import {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const uploadsDir = path.join(__dirname, "../../uploads");
+const uploadsDir = path.join(__dirname, "../uploads");
 
 // Create uploads directory if it doesn't exist
 if (!fs.existsSync(uploadsDir)) {
