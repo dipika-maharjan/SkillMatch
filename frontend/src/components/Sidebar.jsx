@@ -18,7 +18,7 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
     { label: "Applications", href: "/my-applications", icon: FileText },
     { label: "Saved Jobs", href: "/saved-jobs", icon: Bookmark },
     { label: "Resume", href: "/resume", icon: Edit },
-    { label: "Settings", href: "/dashboard#settings", icon: Settings },
+    { label: "Settings", href: "/settings", icon: Settings },
   ];
 
   const isActive = (href) => {

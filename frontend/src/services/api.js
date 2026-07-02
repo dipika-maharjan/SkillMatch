@@ -38,4 +38,50 @@ export const deleteResume = () => {
   return API.delete("/resume");
 };
 
+// Auth / profile / settings endpoints
+export const getProfile = () => API.get("/auth/profile");
+
+export const uploadAvatar = (file) => {
+  const formData = new FormData();
+  formData.append("avatar", file);
+  console.log("Uploading avatar file:", file.name, file.size, "bytes");
+  return API.post("/auth/upload-avatar", formData);
+};
+
+export const updateProfile = (payload) => {
+  // Remove avatarUrl from payload if it's base64 (it should be uploaded separately)
+  const cleanPayload = { ...payload };
+  if (cleanPayload.avatarUrl && cleanPayload.avatarUrl.startsWith("data:")) {
+    delete cleanPayload.avatarUrl;
+  }
+  return API.put("/auth/profile", cleanPayload);
+};
+
+export const getSettings = () => API.get("/auth/settings");
+
+export const updateSettings = (payload) => API.put("/auth/settings", payload);
+
+export const changePassword = (payload) =>
+  API.put("/auth/change-password", payload);
+
+export const logout = () => API.post("/auth/logout");
+
+// Notification endpoints
+export const getNotifications = () => API.get("/notifications");
+
+export const getUnreadNotificationCount = () =>
+  API.get("/notifications/unread-count");
+
+export const createNotification = (payload) =>
+  API.post("/notifications", payload);
+
+export const markNotificationRead = (notificationId) =>
+  API.patch(`/notifications/${notificationId}/read`);
+
+export const markAllNotificationsRead = () =>
+  API.patch("/notifications/read-all");
+
+export const deleteNotification = (notificationId) =>
+  API.delete(`/notifications/${notificationId}`);
+
 export default API;

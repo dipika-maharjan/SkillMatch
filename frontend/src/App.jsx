@@ -13,6 +13,10 @@ import MyApplications from "./pages/MyApplications";
 import SavedJobs from "./pages/SavedJobs";
 import Resume from "./pages/Resume";
 import ResumeAnalysis from "./pages/ResumeAnalysis";
+import SettingsHome from "./pages/SettingsHome";
+import ProfileSettings from "./pages/ProfileSettings";
+import NotificationsSettings from "./pages/NotificationsSettings";
+import ChangePasswordSettings from "./pages/ChangePasswordSettings";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Home from "./pages/Home";
 
@@ -86,6 +90,38 @@ function App() {
         element={
           <ProtectedRoute>
             <ResumeAnalysis />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <SettingsHome />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings/profile"
+        element={
+          <ProtectedRoute>
+            <ProfileSettings />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings/notifications"
+        element={
+          <ProtectedRoute>
+            <NotificationsSettings />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings/change-password"
+        element={
+          <ProtectedRoute>
+            <ChangePasswordSettings />
           </ProtectedRoute>
         }
       />
