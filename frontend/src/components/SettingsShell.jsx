@@ -22,7 +22,9 @@ export default function SettingsShell({
     <div className="min-h-screen bg-[#f6f7fb]">
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
         <aside className="w-[250px] shrink-0 border-r border-slate-200 bg-white px-5 py-6">
-          <div className="mb-8 text-lg font-bold text-indigo-600">SkillMatch</div>
+          <div className="mb-8 text-lg font-bold text-indigo-600">
+            SkillMatch
+          </div>
 
           <nav className="space-y-2">
             {menuItems.map((item) => {

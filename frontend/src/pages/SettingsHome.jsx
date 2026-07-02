@@ -18,7 +18,8 @@ export default function SettingsHome() {
     },
     {
       title: "Change Password",
-      description: "Update your security credentials regularly to maintain safety.",
+      description:
+        "Update your security credentials regularly to maintain safety.",
       href: "/settings/change-password",
     },
   ];
@@ -43,8 +44,12 @@ export default function SettingsHome() {
               className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-6 py-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <div>
-                <h2 className="text-lg font-bold text-slate-900">{card.title}</h2>
-                <p className="mt-1 text-sm text-slate-500">{card.description}</p>
+                <h2 className="text-lg font-bold text-slate-900">
+                  {card.title}
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  {card.description}
+                </p>
               </div>
               <ChevronRight className="h-5 w-5 text-slate-400" />
             </button>

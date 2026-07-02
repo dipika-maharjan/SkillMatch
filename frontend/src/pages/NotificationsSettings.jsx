@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { Bell, CheckCheck, CheckCircle2, Eye, EyeOff, Sparkles, Trash2 } from "lucide-react";
+import {
+  Bell,
+  CheckCheck,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Sparkles,
+  Trash2,
+} from "lucide-react";
 import SettingsShell from "../components/SettingsShell";
 import {
   getNotifications,
@@ -35,7 +43,9 @@ export default function NotificationsSettings() {
       setNotifications(notificationsRes.data?.notifications || []);
       setUnreadCount(unreadRes.data?.unreadCount || 0);
     } catch (error) {
-      setMessage(error.response?.data?.message || "Failed to load notifications.");
+      setMessage(
+        error.response?.data?.message || "Failed to load notifications.",
+      );
     } finally {
       setLoading(false);
     }
@@ -66,7 +76,9 @@ export default function NotificationsSettings() {
       await loadData();
       setMessage("All notifications marked as read.");
     } catch (error) {
-      setMessage(error.response?.data?.message || "Failed to update notifications.");
+      setMessage(
+        error.response?.data?.message || "Failed to update notifications.",
+      );
     } finally {
       setActionLoading(false);
     }
@@ -79,7 +91,9 @@ export default function NotificationsSettings() {
       await loadData();
       setMessage("Notification marked as read.");
     } catch (error) {
-      setMessage(error.response?.data?.message || "Failed to update notification.");
+      setMessage(
+        error.response?.data?.message || "Failed to update notification.",
+      );
     } finally {
       setActionLoading(false);
     }
@@ -92,7 +106,9 @@ export default function NotificationsSettings() {
       await loadData();
       setMessage("Notification deleted.");
     } catch (error) {
-      setMessage(error.response?.data?.message || "Failed to delete notification.");
+      setMessage(
+        error.response?.data?.message || "Failed to delete notification.",
+      );
     } finally {
       setActionLoading(false);
     }
@@ -107,7 +123,9 @@ export default function NotificationsSettings() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-slate-900">Unread</p>
-              <p className="text-xs text-slate-500">Current unread notifications</p>
+              <p className="text-xs text-slate-500">
+                Current unread notifications
+              </p>
             </div>
             <div className="rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-600">
               {unreadCount}
@@ -145,7 +163,9 @@ export default function NotificationsSettings() {
 
       <div className="space-y-4">
         {loading ? (
-          <div className="rounded-3xl bg-white p-6 text-sm text-slate-500 ring-1 ring-slate-200">Loading notifications...</div>
+          <div className="rounded-3xl bg-white p-6 text-sm text-slate-500 ring-1 ring-slate-200">
+            Loading notifications...
+          </div>
         ) : visibleNotifications.length ? (
           visibleNotifications.map((notification) => {
             const Icon = iconMap[notification.type] || Bell;
@@ -163,10 +183,16 @@ export default function NotificationsSettings() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-bold text-slate-900">{notification.title}</h3>
-                        {!notification.isRead && <span className="h-2 w-2 rounded-full bg-indigo-600" />}
+                        <h3 className="text-sm font-bold text-slate-900">
+                          {notification.title}
+                        </h3>
+                        {!notification.isRead && (
+                          <span className="h-2 w-2 rounded-full bg-indigo-600" />
+                        )}
                       </div>
-                      <p className="mt-1 text-sm text-slate-600">{notification.message}</p>
+                      <p className="mt-1 text-sm text-slate-600">
+                        {notification.message}
+                      </p>
                     </div>
                     <span className="whitespace-nowrap text-xs text-slate-400">
                       {new Date(notification.createdAt).toLocaleString()}
