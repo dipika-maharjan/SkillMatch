@@ -7,6 +7,12 @@ import dashboardRoutes from "./routes/dashboardRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import applicationRoutes from "./routes/applicationRoutes.js";
 import savedJobRoutes from "./routes/savedJobRoutes.js";
+import resumeRoutes from "./routes/resumeRoutes.js";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -18,6 +24,9 @@ const app = express();
 app.use(cors());
 
 app.use(express.json());
+
+// Static file serving for uploads
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Routes
 app.get("/", (req, res) => {
@@ -34,6 +43,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/saved-jobs", savedJobRoutes);
+app.use("/api/resume", resumeRoutes);
 
 const PORT = process.env.PORT || 5000;
 
