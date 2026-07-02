@@ -9,7 +9,13 @@ const notificationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["job_match", "resume_insight", "application_update", "system", "custom"],
+      enum: [
+        "job_match",
+        "resume_insight",
+        "application_update",
+        "system",
+        "custom",
+      ],
       default: "system",
     },
     title: {

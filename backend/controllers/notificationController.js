@@ -2,7 +2,9 @@ import Notification from "../models/Notification.js";
 
 const getNotifications = async (req, res) => {
   try {
-    const notifications = await Notification.find({ user: req.user._id }).sort({ createdAt: -1 });
+    const notifications = await Notification.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
 
     return res.json({ notifications });
   } catch (error) {
@@ -12,7 +14,10 @@ const getNotifications = async (req, res) => {
 
 const getUnreadNotificationCount = async (req, res) => {
   try {
-    const count = await Notification.countDocuments({ user: req.user._id, isRead: false });
+    const count = await Notification.countDocuments({
+      user: req.user._id,
+      isRead: false,
+    });
     return res.json({ unreadCount: count });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -24,7 +29,9 @@ const createNotification = async (req, res) => {
     const { type, title, message, actionUrl, metadata } = req.body || {};
 
     if (!title || !message) {
-      return res.status(400).json({ message: "Title and message are required" });
+      return res
+        .status(400)
+        .json({ message: "Title and message are required" });
     }
 
     const notification = await Notification.create({
@@ -36,7 +43,9 @@ const createNotification = async (req, res) => {
       metadata: metadata || {},
     });
 
-    return res.status(201).json({ message: "Notification created", notification });
+    return res
+      .status(201)
+      .json({ message: "Notification created", notification });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

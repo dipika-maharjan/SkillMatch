@@ -1,8 +1,27 @@
 import User from "../models/User.js";
+import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+
+const buildPublicUser = (user) => ({
+  _id: user._id,
+  fullname: user.fullname,
+  email: user.email,
+  role: user.role,
+  avatarUrl: user.avatarUrl || "",
+  phone: user.phone || "",
+  location: user.location || "",
+  headline: user.headline || "",
+  summary: user.summary || "",
+  skills: user.skills || [],
+  education: user.education || [],
+  links: user.links || {},
+  preferences: user.preferences || {},
+  createdAt: user.createdAt,
+  updatedAt: user.updatedAt,
+});
 
 // REGISTER
 const registerUser = async (req, res) => {
@@ -42,10 +61,7 @@ const registerUser = async (req, res) => {
 
     if (user) {
       return res.status(201).json({
-        _id: user._id,
-        fullname: user.fullname,
-        email: user.email,
-        role: user.role,
+        ...buildPublicUser(user),
         token: generateToken(user._id),
       });
     }
@@ -89,10 +105,7 @@ const loginUser = async (req, res) => {
 
     if (user && (await bcrypt.compare(password, user.password))) {
       return res.json({
-        _id: user._id,
-        fullname: user.fullname,
-        email: user.email,
-        role: user.role,
+        ...buildPublicUser(user),
         token: generateToken(user._id),
       });
     }
@@ -109,6 +122,11 @@ const loginUser = async (req, res) => {
 
 // LOGOUT
 const logoutUser = async (req, res) => {
+  if (req.user) {
+    req.user.tokenInvalidBefore = new Date();
+    await req.user.save();
+  }
+
   return res.json({
     message: "Logged out successfully",
   });
@@ -203,7 +221,170 @@ const resetPassword = async (req, res) => {
 
 // PROFILE
 const getProfile = async (req, res) => {
-  return res.json(req.user);
+  return res.json(buildPublicUser(req.user));
+};
+
+// UPDATE PROFILE
+const updateProfile = async (req, res) => {
+  try {
+    const {
+      fullname,
+      phone,
+      location,
+      headline,
+      summary,
+      skills,
+      education,
+      links,
+    } = req.body || {};
+
+    if (fullname !== undefined) {
+      const trimmedName = String(fullname).trim();
+      if (trimmedName.length < 2) {
+        return res
+          .status(400)
+          .json({ message: "Full name must be at least 2 characters" });
+      }
+      req.user.fullname = trimmedName;
+    }
+
+    if (phone !== undefined) req.user.phone = String(phone).trim();
+    if (location !== undefined) req.user.location = String(location).trim();
+    if (headline !== undefined) req.user.headline = String(headline).trim();
+    if (summary !== undefined) req.user.summary = String(summary).trim();
+
+    if (skills !== undefined) {
+      const skillsArray =
+        typeof skills === "string"
+          ? skills
+              .split(",")
+              .map((skill) => skill.trim())
+              .filter(Boolean)
+          : Array.isArray(skills)
+            ? skills.map((skill) => String(skill).trim()).filter(Boolean)
+            : [];
+      req.user.skills = skillsArray;
+    }
+
+    if (education !== undefined) {
+      const educationData =
+        typeof education === "string" ? JSON.parse(education) : education;
+      req.user.education = Array.isArray(educationData)
+        ? educationData
+        : req.user.education;
+    }
+
+    if (links !== undefined) {
+      const linksData = typeof links === "string" ? JSON.parse(links) : links;
+      req.user.links = {
+        portfolio: String(linksData?.portfolio || "").trim(),
+        linkedin: String(linksData?.linkedin || "").trim(),
+        github: String(linksData?.github || "").trim(),
+      };
+    }
+
+    await req.user.save();
+    console.log("Profile updated successfully for user:", req.user.email);
+
+    return res.json({
+      message: "Profile updated successfully",
+      user: buildPublicUser(req.user),
+    });
+  } catch (error) {
+    console.error("Profile update error:", error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// CHANGE PASSWORD
+const changePassword = async (req, res) => {
+  try {
+    const currentPassword = req.body?.currentPassword;
+    const newPassword = req.body?.newPassword;
+
+    if (!currentPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "Current password and new password are required" });
+    }
+
+    if (String(newPassword).length < 8) {
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 8 characters" });
+    }
+
+    const userWithPassword = await User.findById(req.user._id).select(
+      "+password",
+    );
+    if (!userWithPassword) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(
+      currentPassword,
+      userWithPassword.password,
+    );
+    if (!isMatch) {
+      return res.status(400).json({ message: "Current password is incorrect" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    userWithPassword.password = await bcrypt.hash(newPassword, salt);
+    userWithPassword.tokenInvalidBefore = new Date();
+    await userWithPassword.save();
+
+    return res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// GET SETTINGS
+const getSettings = async (req, res) => {
+  return res.json({
+    preferences: req.user.preferences || {},
+    account: buildPublicUser(req.user),
+  });
+};
+
+// UPDATE SETTINGS
+const updateSettings = async (req, res) => {
+  try {
+    const { preferences = {}, account = {} } = req.body || {};
+
+    if (preferences && typeof preferences === "object") {
+      req.user.preferences = {
+        ...req.user.preferences,
+        ...preferences,
+      };
+    }
+
+    if (account && typeof account === "object") {
+      if (account.fullname !== undefined)
+        req.user.fullname = String(account.fullname).trim();
+      if (account.phone !== undefined)
+        req.user.phone = String(account.phone).trim();
+      if (account.location !== undefined)
+        req.user.location = String(account.location).trim();
+      if (account.headline !== undefined)
+        req.user.headline = String(account.headline).trim();
+      if (account.summary !== undefined)
+        req.user.summary = String(account.summary).trim();
+    }
+
+    await req.user.save();
+
+    return res.json({
+      message: "Settings updated successfully",
+      settings: {
+        preferences: req.user.preferences,
+        account: buildPublicUser(req.user),
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 };
 
 export {
@@ -213,4 +394,8 @@ export {
   forgotPassword,
   resetPassword,
   getProfile,
+  updateProfile,
+  changePassword,
+  getSettings,
+  updateSettings,
 };
