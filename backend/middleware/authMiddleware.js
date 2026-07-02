@@ -23,7 +23,8 @@ const protect = async (req, res, next) => {
 
       if (
         req.user.tokenInvalidBefore &&
-        decoded.iat < Math.floor(new Date(req.user.tokenInvalidBefore).getTime() / 1000)
+        decoded.iat <
+          Math.floor(new Date(req.user.tokenInvalidBefore).getTime() / 1000)
       ) {
         return res.status(401).json({
           message: "Session expired. Please log in again.",

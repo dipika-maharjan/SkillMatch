@@ -85,7 +85,11 @@ const userSchema = mongoose.Schema(
       jobAlerts: { type: Boolean, default: true },
       emailNotifications: { type: Boolean, default: true },
       marketingEmails: { type: Boolean, default: false },
-      profileVisibility: { type: String, enum: ["public", "private"], default: "public" },
+      profileVisibility: {
+        type: String,
+        enum: ["public", "private"],
+        default: "public",
+      },
     },
 
     tokenInvalidBefore: {
@@ -103,7 +107,7 @@ const userSchema = mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const User = mongoose.model("User", userSchema);
