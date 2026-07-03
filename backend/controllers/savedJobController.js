@@ -1,5 +1,6 @@
 import SavedJob from "../models/SavedJob.js";
 import Job from "../models/Job.js";
+import Resume from "../models/Resume.js";
 
 const saveJob = async (req, res) => {
   try {
@@ -43,13 +44,43 @@ const unsaveJob = async (req, res) => {
 
 const getSavedJobs = async (req, res) => {
   try {
-    const savedJobs = await SavedJob.find({ user: req.user._id })
+    const savedJobsData = await SavedJob.find({ user: req.user._id })
       .sort({ savedAt: -1 })
       .populate({
         path: "job",
         select:
-          "title company location workType experienceLevel category salaryMin salaryMax description skills postedAt",
+          "title company location workType experienceLevel category salaryMin salaryMax description skills postedAt isActive",
       });
+
+    // Calculate matches
+    let combinedSkills = [];
+    if (req.user) {
+      const user = req.user;
+      const resume = await Resume.findOne({ user: user._id, isActive: true }).sort({ uploadedAt: -1 });
+      const profileSkills = user.skills || [];
+      const resumeSkills = resume ? (resume.skills || []) : [];
+      combinedSkills = [...new Set([...profileSkills, ...resumeSkills])];
+    }
+
+    const savedJobs = savedJobsData.map((savedJob) => {
+      let match = 0;
+      const job = savedJob.job;
+      if (job && job.skills && job.skills.length > 0 && combinedSkills.length > 0) {
+        const matchedSkills = job.skills.filter((skill) =>
+          combinedSkills.some(
+            (userSkill) =>
+              userSkill.toLowerCase() === skill.toLowerCase()
+          )
+        );
+        match = Math.round((matchedSkills.length / job.skills.length) * 100);
+      }
+      return {
+        _id: savedJob._id,
+        user: savedJob.user,
+        savedAt: savedJob.savedAt,
+        job: job ? { ...job.toObject(), match } : null,
+      };
+    });
 
     return res.json({ savedJobs });
   } catch (error) {

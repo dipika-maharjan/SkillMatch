@@ -1,6 +1,7 @@
 import Application from "../models/Application.js";
 import Job from "../models/Job.js";
 import Resume from "../models/Resume.js";
+import Notification from "../models/Notification.js";
 
 const normalizeSkills = (skills = []) => {
   return (skills || [])
@@ -93,6 +94,15 @@ const createApplication = async (req, res) => {
       coverLetter,
       resumeUrl: effectiveResumeUrl,
       matchScore,
+    });
+
+    // Generate a notification for the user
+    await Notification.create({
+      user: req.user._id,
+      title: "Application Submitted",
+      message: `Your application for ${job.title} at ${job.company} has been submitted successfully.`,
+      type: "application",
+      relatedId: application._id,
     });
 
     return res.status(201).json(application);

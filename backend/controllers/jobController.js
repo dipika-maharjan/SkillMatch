@@ -1,4 +1,5 @@
 import Job from "../models/Job.js";
+import Resume from "../models/Resume.js";
 
 const createJob = async (req, res) => {
   try {
@@ -95,10 +96,34 @@ const getJobs = async (req, res) => {
       sortOption = { salaryMax: -1 };
     }
 
-    const [jobs, totalJobs] = await Promise.all([
+    const [dbJobs, totalJobs] = await Promise.all([
       Job.find(filters).sort(sortOption).skip(skip).limit(pageSize),
       Job.countDocuments(filters),
     ]);
+
+    // Calculate matches
+    let combinedSkills = [];
+    if (req.user) {
+      const user = req.user;
+      const resume = await Resume.findOne({ user: user._id, isActive: true }).sort({ uploadedAt: -1 });
+      const profileSkills = user.skills || [];
+      const resumeSkills = resume ? (resume.skills || []) : [];
+      combinedSkills = [...new Set([...profileSkills, ...resumeSkills])];
+    }
+
+    const jobs = dbJobs.map((job) => {
+      let match = 0;
+      if (job.skills && job.skills.length > 0 && combinedSkills.length > 0) {
+        const matchedSkills = job.skills.filter((skill) =>
+          combinedSkills.some(
+            (userSkill) =>
+              userSkill.toLowerCase() === skill.toLowerCase()
+          )
+        );
+        match = Math.round((matchedSkills.length / job.skills.length) * 100);
+      }
+      return { ...job.toObject(), match };
+    });
 
     return res.json({
       jobs,
