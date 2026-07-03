@@ -44,7 +44,7 @@ export const getProfile = () => API.get("/auth/profile");
 export const uploadAvatar = (file) => {
   const formData = new FormData();
   formData.append("avatar", file);
-  console.log("Uploading avatar file:", file.name, file.size, "bytes");
+
   return API.post("/auth/upload-avatar", formData);
 };
 

@@ -8,7 +8,7 @@ export default function ProtectedRoute({ children }) {
 
 	useEffect(() => {
 		const verifyToken = async () => {
-			if (!token) {
+			if (!token || token === "null" || token === "undefined") {
 				setStatus("unauthenticated");
 				return;
 			}
