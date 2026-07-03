@@ -26,14 +26,11 @@ const __dirname = path.dirname(__filename);
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, "../uploads/avatars");
-    console.log("Multer destination:", uploadDir);
 
     // Ensure directory exists (synchronously)
     try {
       if (!fs.existsSync(uploadDir)) {
-        console.log("Creating upload directory:", uploadDir);
         fs.mkdirSync(uploadDir, { recursive: true });
-        console.log("✅ Directory created");
       }
       cb(null, uploadDir);
     } catch (err) {
@@ -44,25 +41,17 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const filename = "avatar-" + uniqueSuffix + path.extname(file.originalname);
-    console.log("Multer will save as:", filename);
     cb(null, filename);
   },
 });
 
 const fileFilter = (req, file, cb) => {
-  console.log("Multer fileFilter - checking file:", {
-    fieldname: file.fieldname,
-    originalname: file.originalname,
-    mimetype: file.mimetype,
-    size: file.size,
-  });
+
 
   const allowedMimes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
   if (allowedMimes.includes(file.mimetype)) {
-    console.log("✅ File type accepted:", file.mimetype);
     cb(null, true);
   } else {
-    console.log("❌ File type rejected:", file.mimetype);
     cb(new Error("Only image files (JPEG, PNG, JPG, WEBP) are allowed"), false);
   }
 };
@@ -118,16 +107,7 @@ router.post(
         });
       }
 
-      console.log("✅ File received by multer:", {
-        filename: req.file.filename,
-        path: req.file.path,
-        size: req.file.size,
-        mimetype: req.file.mimetype,
-      });
-
-      // Verify file actually exists on disk
       const fileExists = fs.existsSync(req.file.path);
-      console.log("File exists on disk:", fileExists);
 
       if (!fileExists) {
         console.error("❌ File not on disk at:", req.file.path);
@@ -136,16 +116,11 @@ router.post(
         });
       }
 
-      console.log("✅ File verified on disk");
-
       // Update user's avatarUrl
       const avatarUrl = `/uploads/avatars/${req.file.filename}`;
-      console.log("Setting avatar URL:", avatarUrl);
 
       req.user.avatarUrl = avatarUrl;
       await req.user.save();
-
-      console.log("✅ User saved to database with avatar:", avatarUrl);
 
       const response = {
         message: "Avatar uploaded successfully",
@@ -156,9 +131,7 @@ router.post(
         },
       };
 
-      console.log("📤 Sending response:", response);
       res.json(response);
-      console.log("✅ Response sent to client");
     } catch (error) {
       console.error("❌ Avatar upload handler error:", error);
       res.status(500).json({ message: error.message });

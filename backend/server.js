@@ -40,13 +40,11 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(
   "/uploads",
   (req, res, next) => {
-    console.log("Static file request:", req.path);
     next();
   },
   express.static(path.join(__dirname, "./uploads"), {
     maxAge: 0, // No caching to ensure fresh files
     setHeaders: (res, filePath) => {
-      console.log("Serving static file:", filePath);
       res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     },
   }),
@@ -60,8 +58,6 @@ app.get("/", (req, res) => {
 // Test file serving
 app.get("/test-file-serve", (req, res) => {
   const testPath = path.join(__dirname, "./uploads/avatars");
-  console.log("Avatar directory path:", testPath);
-  console.log("Directory exists:", fs.existsSync(testPath));
   try {
     const files = fs.readdirSync(testPath);
     const fileDetails = files.map((file) => {
@@ -90,12 +86,6 @@ app.get("/test-serve-file/:filename", (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(__dirname, "./uploads/avatars", filename);
 
-  console.log("Testing file retrieval:", {
-    filename,
-    fullPath: filePath,
-    exists: fs.existsSync(filePath),
-  });
-
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ error: "File not found", path: filePath });
   }
@@ -119,12 +109,6 @@ app.get("/serve-avatar/:filename", (req, res) => {
   const filename = req.params.filename;
   const filePath = path.join(__dirname, "./uploads/avatars", filename);
 
-  console.log("🔍 Serve avatar request:", {
-    filename,
-    fullPath: filePath,
-    exists: fs.existsSync(filePath),
-  });
-
   if (!fs.existsSync(filePath)) {
     return res.status(404).json({ error: "File not found", path: filePath });
   }
@@ -146,7 +130,6 @@ app.get("/serve-avatar/:filename", (req, res) => {
     });
 
     stream.pipe(res);
-    console.log("✅ Serving file:", filename);
   } catch (err) {
     console.error("Serve error:", err);
     res.status(500).json({ error: err.message });
@@ -154,7 +137,6 @@ app.get("/serve-avatar/:filename", (req, res) => {
 });
 
 app.post("/test", (req, res) => {
-  console.log("TEST ROUTE HIT");
   res.json({ ok: true });
 });
 
