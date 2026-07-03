@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Check,
   Edit2,
@@ -206,7 +207,7 @@ export default function ProfileSettings() {
       const hasNewAvatar =
         draft.avatarUrl && draft.avatarUrl.startsWith("data:");
       if (hasNewAvatar) {
-        console.log("Uploading new avatar...");
+
         // Convert base64 to file and upload
         const base64Data = draft.avatarUrl;
         const mimeMatch = base64Data.match(/data:([^;]+)/);
@@ -227,9 +228,7 @@ export default function ProfileSettings() {
 
           try {
             const uploadResponse = await uploadAvatar(file);
-            console.log("Avatar upload response:", uploadResponse.data);
             avatarUrl = uploadResponse.data?.avatarUrl || profile.avatarUrl;
-            console.log("New avatar URL:", avatarUrl);
           } catch (uploadError) {
             console.error("Avatar upload failed:", uploadError);
             setError(
@@ -261,9 +260,7 @@ export default function ProfileSettings() {
         },
       };
 
-      console.log("Updating profile with:", payload);
       const response = await updateProfile(payload);
-      console.log("Profile update response:", response.data);
 
       const updatedUser = response.data?.user || response.data;
 
@@ -287,7 +284,7 @@ export default function ProfileSettings() {
           },
         };
 
-        console.log("Updated profile:", nextProfile);
+
         setProfile(nextProfile);
         setShowEditor(false);
         localStorage.setItem("user", JSON.stringify(updatedUser));
@@ -332,7 +329,7 @@ export default function ProfileSettings() {
       showHeader={false}
     >
       <div className="mb-6 text-xs text-slate-500">
-        <span className="font-medium text-slate-700">Settings</span>
+        <Link to="/settings" className="font-medium text-slate-700 hover:text-indigo-600 transition">Settings</Link>
         <span className="mx-1">›</span>
         <span className="text-indigo-600">Account</span>
       </div>

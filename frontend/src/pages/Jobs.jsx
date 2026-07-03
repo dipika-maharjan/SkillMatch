@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Search, Sliders, MapPin, Clock, Bookmark } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import API from "../services/api";
+import SaveJobPopup from "../components/SaveJobPopup";
 
 const categoryOptions = [
   "All",
@@ -38,6 +39,7 @@ export default function Jobs() {
   const [page, setPage] = useState(1);
   const [totalJobs, setTotalJobs] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [showSavePopup, setShowSavePopup] = useState(false);
 
   const activeWorkType =
     workType === "remote"
@@ -370,6 +372,7 @@ export default function Jobs() {
                                 } else {
                                   await API.post(`/saved-jobs/${job._id}`);
                                   setSavedJobIds((ids) => [...ids, job._id]);
+                                  setShowSavePopup(true);
                                 }
                               } catch (err) {
                                 console.error("Save toggle failed", err);
@@ -439,6 +442,11 @@ export default function Jobs() {
           )}
         </div>
       </main>
+
+      <SaveJobPopup
+        isOpen={showSavePopup}
+        onClose={() => setShowSavePopup(false)}
+      />
     </div>
   );
 }

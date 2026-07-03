@@ -30,6 +30,8 @@ export default function JobDetail() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const [showSavePopup, setShowSavePopup] = useState(false);
+
   useEffect(() => {
     const fetchJob = async () => {
       setLoading(true);
@@ -105,6 +107,31 @@ export default function JobDetail() {
           Back to jobs
         </button>
       </div>
+
+      {showSavePopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-xl">
+            <div className="mx-auto w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6">
+              <CheckCircle className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              Job Saved Successfully
+            </h3>
+            <p className="text-gray-500 text-sm mb-6">
+              This job has been added to your saved jobs list.
+            </p>
+            <button
+              onClick={() => {
+                setShowSavePopup(false);
+                navigate("/saved-jobs");
+              }}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition"
+            >
+              Go to Saved Jobs
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-6xl mx-auto px-6 sm:px-8 py-8">
         <div className="bg-white rounded-lg p-6 sm:p-8 shadow-sm mb-6">
@@ -192,6 +219,7 @@ export default function JobDetail() {
                   } else {
                     await API.post(`/saved-jobs/${job._id}`);
                     setSavedJobIds((ids) => [...ids, job._id]);
+                    setShowSavePopup(true);
                   }
                 } catch (err) {
                   console.error("Save toggle failed", err);

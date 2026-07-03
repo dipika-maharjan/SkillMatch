@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { Search, Bell, User, ArrowRight, FileText, Menu } from "lucide-react";
+import ProfileMenu from "../components/ProfileMenu";
 import API from "../services/api";
 
 const fallbackDashboard = {
@@ -120,13 +122,11 @@ export default function Dashboard() {
 
             {/* Right Icons */}
             <div className="flex items-center gap-4">
-              <button className="relative p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition">
+              <Link to="/settings/notifications" className="relative p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition">
                 <Bell className="w-5 h-5" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
-              <button className="p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition">
-                <User className="w-5 h-5" />
-              </button>
+              </Link>
+              <ProfileMenu user={user} />
             </div>
           </div>
         </div>
@@ -217,10 +217,10 @@ export default function Dashboard() {
                   ))}
                 </div>
 
-                <button className="mt-6 text-indigo-600 hover:text-indigo-700 font-semibold text-sm flex items-center gap-1">
+                <Link to="/jobs" className="mt-6 text-indigo-600 hover:text-indigo-700 font-semibold text-sm flex items-center gap-1 w-fit">
                   View all jobs
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -253,26 +253,47 @@ export default function Dashboard() {
                   ))}
                 </div>
 
-                <button className="mt-6 text-indigo-600 hover:text-indigo-700 font-semibold text-sm flex items-center gap-1">
+                <Link to="/settings/profile" className="mt-6 text-indigo-600 hover:text-indigo-700 font-semibold text-sm flex items-center gap-1 w-fit">
                   View full profile
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
               </div>
 
               {/* Resume Section */}
               <div className="bg-white rounded-lg p-6 shadow-sm">
                 <h2 className="text-xl font-bold text-gray-900 mb-4">Resume</h2>
 
-                <div className="bg-gray-50 rounded-lg p-4 mb-4 flex items-center gap-3">
-                  <FileText className="w-5 h-5 text-gray-500" />
-                  <span className="text-sm font-medium text-gray-900">
-                    {resume?.fileName || "No resume uploaded yet"}
-                  </span>
-                </div>
-
-                <button className="w-64 border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 font-semibold py-2 rounded-lg transition">
-                  Update Resume
-                </button>
+                {resume ? (
+                  <>
+                    <div className="bg-gray-50 rounded-lg p-4 mb-4 flex items-center gap-3 border border-gray-100">
+                      <FileText className="w-5 h-5 text-indigo-500" />
+                      <span className="text-sm font-medium text-gray-900 truncate">
+                        {resume.fileName}
+                      </span>
+                    </div>
+                    <Link
+                      to="/resume"
+                      className="flex items-center justify-center w-full border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 font-semibold py-2 rounded-lg transition"
+                    >
+                      Update Resume
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <div className="bg-gray-50 rounded-lg p-4 mb-4 flex flex-col items-center justify-center gap-2 border border-dashed border-gray-300 py-6">
+                      <FileText className="w-8 h-8 text-gray-400" />
+                      <span className="text-sm text-gray-500">
+                        No resume uploaded yet
+                      </span>
+                    </div>
+                    <Link
+                      to="/resume"
+                      className="flex items-center justify-center w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg transition"
+                    >
+                      Upload Resume
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
