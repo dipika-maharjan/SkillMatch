@@ -1,6 +1,21 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import ProfileMenu from "./ProfileMenu";
 
 export default function Navbar() {
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const savedUser = JSON.parse(localStorage.getItem("user") || "null");
+    
+    if (token && token !== "null" && token !== "undefined") {
+      setIsAuthenticated(true);
+      setUser(savedUser);
+    }
+  }, []);
+
   return (
     <header className="bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -38,20 +53,26 @@ export default function Navbar() {
             </a>
           </nav>
 
-          {/* Auth Buttons */}
+          {/* Auth Buttons or Profile Menu */}
           <div className="flex items-center gap-4">
-            <Link
-              to="/login"
-              className="text-sm text-gray-700 hover:text-blue-600 font-medium transition"
-            >
-              Log in
-            </Link>
-            <Link
-              to="/register"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition"
-            >
-              Get Started
-            </Link>
+            {isAuthenticated ? (
+              <ProfileMenu user={user} />
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="text-sm text-gray-700 hover:text-blue-600 font-medium transition"
+                >
+                  Log in
+                </Link>
+                <Link
+                  to="/register"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-semibold text-sm transition"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

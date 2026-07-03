@@ -1,4 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
   Home,
   Briefcase,
@@ -7,10 +8,29 @@ import {
   Edit,
   Settings,
   X,
+  LogOut,
 } from "lucide-react";
+import { logout } from "../services/api";
+import LogoutModal from "./LogoutModal";
 
 export default function Sidebar({ isOpen = false, onClose = () => {} }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [showConfirmLogout, setShowConfirmLogout] = useState(false);
+  const [showSuccessLogout, setShowSuccessLogout] = useState(false);
+
+  const handleLogoutConfirm = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.error("Logout error", err);
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setShowConfirmLogout(false);
+      setShowSuccessLogout(true);
+    }
+  };
 
   const menuItems = [
     { label: "Dashboard", href: "/dashboard", icon: Home },
@@ -48,7 +68,9 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
         }`}
       >
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-6">
-          <h1 className="text-lg font-bold text-indigo-600">SkillMatch</h1>
+          <Link to="/dashboard" className="text-lg font-bold text-indigo-600 hover:text-indigo-700 transition">
+            SkillMatch
+          </Link>
           <button
             type="button"
             aria-label="Close menu"
@@ -82,10 +104,32 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
           })}
         </nav>
 
-        <div className="border-t border-gray-200 px-4 py-6">
+        <div className="border-t border-gray-200 px-4 py-6 space-y-4">
+          <button
+            onClick={() => setShowConfirmLogout(true)}
+            className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all"
+          >
+            <LogOut className="h-5 w-5" />
+            <span>Log out</span>
+          </button>
           <p className="text-center text-xs text-gray-500">© 2026 SkillMatch</p>
         </div>
       </aside>
+
+      <LogoutModal
+        showConfirmLogout={showConfirmLogout}
+        showSuccessLogout={showSuccessLogout}
+        onConfirm={handleLogoutConfirm}
+        onCancel={() => setShowConfirmLogout(false)}
+        onReturnToLogin={() => {
+          setShowSuccessLogout(false);
+          navigate("/login");
+        }}
+        onGoToHomepage={() => {
+          setShowSuccessLogout(false);
+          navigate("/");
+        }}
+      />
     </>
   );
 }

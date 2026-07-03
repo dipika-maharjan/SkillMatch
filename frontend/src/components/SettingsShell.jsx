@@ -22,9 +22,9 @@ export default function SettingsShell({
     <div className="min-h-screen bg-[#f6f7fb]">
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
         <aside className="w-[250px] shrink-0 border-r border-slate-200 bg-white px-5 py-6">
-          <div className="mb-8 text-lg font-bold text-indigo-600">
+          <Link to="/dashboard" className="mb-8 block text-lg font-bold text-indigo-600 hover:text-indigo-700 transition">
             SkillMatch
-          </div>
+          </Link>
 
           <nav className="space-y-2">
             {menuItems.map((item) => {
@@ -52,7 +52,7 @@ export default function SettingsShell({
         <main className="flex-1 px-8 py-8 xl:px-12">
           {showHeader && title && (
             <div className="mb-5 text-xs text-slate-500">
-              <span className="font-medium text-slate-700">Settings</span>
+              <Link to="/settings" className="font-medium text-slate-700 hover:text-indigo-600 transition">Settings</Link>
               <ChevronRight className="mx-1 inline h-3 w-3" />
               <span className="text-indigo-600">{title}</span>
             </div>
