@@ -208,11 +208,10 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading || !formData.email.trim() || !formData.password.trim()}
-                  className={`w-full text-white font-semibold py-3 px-4 rounded-lg transition duration-200 mt-4 sm:mt-6 shadow-sm ${
-                    loading
+                  className={`w-full text-white font-semibold py-3 px-4 rounded-lg transition duration-200 mt-4 sm:mt-6 shadow-sm ${loading
                       ? "bg-blue-400 cursor-not-allowed"
                       : "bg-blue-700 hover:bg-blue-800"
-                  }`}
+                    }`}
                 >
                   {loading
                     ? "Signing in..."
@@ -221,11 +220,10 @@ export default function Login() {
 
                 {feedback.message && (
                   <p
-                    className={`rounded-lg border px-4 py-3 text-sm leading-6 ${
-                      feedback.type === "success"
+                    className={`rounded-lg border px-4 py-3 text-sm leading-6 ${feedback.type === "success"
                         ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                         : "border-rose-200 bg-rose-50 text-rose-700"
-                    }`}
+                      }`}
                   >
                     {feedback.message}
                   </p>

@@ -19,6 +19,13 @@ import NotificationsSettings from "./pages/NotificationsSettings";
 import ChangePasswordSettings from "./pages/ChangePasswordSettings";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import Home from "./pages/Home";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminJobs from "./pages/AdminJobs";
+import AdminApplications from "./pages/AdminApplications";
+import AdminUsers from "./pages/AdminUsers";
+import AdminAnalytics from "./pages/AdminAnalytics";
+import AIAssistant from "./pages/AIAssistant";
+import EnhancedResumeFeedback from "./pages/EnhancedResumeFeedback";
 
 function App() {
   return (
@@ -94,6 +101,14 @@ function App() {
         }
       />
       <Route
+        path="/enhanced-resume-feedback"
+        element={
+          <ProtectedRoute>
+            <EnhancedResumeFeedback />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/settings"
         element={
           <ProtectedRoute>
@@ -130,6 +145,54 @@ function App() {
         element={
           <ProtectedRoute>
             <CompanyDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ai-assistant"
+        element={
+          <ProtectedRoute>
+            <AIAssistant />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/dashboard"
+        element={
+          <ProtectedRoute>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/jobs"
+        element={
+          <ProtectedRoute>
+            <AdminJobs />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/applications"
+        element={
+          <ProtectedRoute>
+            <AdminApplications />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/users"
+        element={
+          <ProtectedRoute>
+            <AdminUsers />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/analytics"
+        element={
+          <ProtectedRoute>
+            <AdminAnalytics />
           </ProtectedRoute>
         }
       />

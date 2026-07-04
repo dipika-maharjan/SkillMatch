@@ -13,7 +13,7 @@ import {
 import { logout } from "../services/api";
 import LogoutModal from "./LogoutModal";
 
-export default function Sidebar({ isOpen = false, onClose = () => {} }) {
+export default function Sidebar({ isOpen = false, onClose = () => { } }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
@@ -63,9 +63,8 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-screen w-64 flex-col border-r border-gray-200 bg-gray-50 transition-transform lg:sticky lg:top-0 lg:z-auto lg:translate-x-0 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen w-64 flex-col border-r border-gray-200 bg-gray-50 transition-transform lg:sticky lg:top-0 lg:z-auto lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-6">
           <Link to="/dashboard" className="text-lg font-bold text-indigo-600 hover:text-indigo-700 transition">
@@ -91,11 +90,10 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
                 key={item.href}
                 to={item.href}
                 onClick={onClose}
-                className={`flex items-center gap-3 rounded-lg px-4 py-3 transition-all ${
-                  active
+                className={`flex items-center gap-3 rounded-lg px-4 py-3 transition-all ${active
                     ? "bg-indigo-100 font-medium text-indigo-600"
                     : "text-gray-700 hover:bg-gray-100"
-                }`}
+                  }`}
               >
                 <Icon className="h-5 w-5" />
                 <span className="text-sm">{item.label}</span>

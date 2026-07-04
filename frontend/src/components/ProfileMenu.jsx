@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Settings, LogOut } from "lucide-react";
+import { User, Settings, LogOut, Sparkles, FileText } from "lucide-react";
 import { logout } from "../services/api";
 import LogoutModal from "./LogoutModal";
 
@@ -68,10 +68,12 @@ export default function ProfileMenu({ user }) {
               {user?.fullname?.charAt(0) || "U"}
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-900">{user?.fullname || "User"}</p>
+              <p className="text-sm font-semibold text-gray-900">
+                {user?.fullname || "User"}
+              </p>
             </div>
           </div>
-          
+
           <div className="py-2">
             <Link
               to="/settings/profile"
@@ -82,6 +84,22 @@ export default function ProfileMenu({ user }) {
               <span>Profile</span>
             </Link>
             <Link
+              to="/ai-assistant"
+              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition"
+              onClick={() => setIsOpen(false)}
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>AI Assistant</span>
+            </Link>
+            <Link
+              to="/enhanced-resume-feedback"
+              className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition"
+              onClick={() => setIsOpen(false)}
+            >
+              <FileText className="w-4 h-4" />
+              <span>Resume Feedback</span>
+            </Link>
+            <Link
               to="/settings"
               className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition"
               onClick={() => setIsOpen(false)}
@@ -90,7 +108,7 @@ export default function ProfileMenu({ user }) {
               <span>Settings</span>
             </Link>
           </div>
-          
+
           <div className="py-2 border-t border-gray-100">
             <button
               onClick={handleLogoutClick}

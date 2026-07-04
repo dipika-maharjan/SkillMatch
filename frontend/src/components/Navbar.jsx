@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Sparkles } from "lucide-react";
 import ProfileMenu from "./ProfileMenu";
 
 export default function Navbar() {
@@ -9,7 +10,7 @@ export default function Navbar() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const savedUser = JSON.parse(localStorage.getItem("user") || "null");
-    
+
     if (token && token !== "null" && token !== "undefined") {
       setIsAuthenticated(true);
       setUser(savedUser);
@@ -33,12 +34,23 @@ export default function Navbar() {
             >
               Home
             </Link>
-            <a
-              href="#"
-              className="text-sm text-gray-700 hover:text-blue-600 font-medium transition"
-            >
-              Jobs
-            </a>
+            {isAuthenticated && (
+              <>
+                <Link
+                  to="/jobs"
+                  className="text-sm text-gray-700 hover:text-blue-600 font-medium transition"
+                >
+                  Jobs
+                </Link>
+                <Link
+                  to="/ai-assistant"
+                  className="text-sm text-gray-700 hover:text-blue-600 font-medium transition flex items-center gap-1"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  AI Assistant
+                </Link>
+              </>
+            )}
             <a
               href="#"
               className="text-sm text-gray-700 hover:text-blue-600 font-medium transition"
