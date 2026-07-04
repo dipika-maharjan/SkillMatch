@@ -1,4 +1,13 @@
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load environment variables from backend/.env relative to this file.
+dotenv.config({ path: path.join(__dirname, ".env") });
+
 import cors from "cors";
 import express from "express";
 import connectDB from "./config/db.js";
@@ -9,12 +18,9 @@ import applicationRoutes from "./routes/applicationRoutes.js";
 import savedJobRoutes from "./routes/savedJobRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
-import path from "path";
-import { fileURLToPath } from "url";
+import adminRoutes from "./routes/adminRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 import fs from "fs";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Ensure uploads directories exist
 const uploadsDir = path.join(__dirname, "./uploads");
@@ -23,8 +29,6 @@ if (!fs.existsSync(avatarsDir)) {
   fs.mkdirSync(avatarsDir, { recursive: true });
   console.log("Created uploads/avatars directory");
 }
-
-dotenv.config();
 
 connectDB();
 
@@ -147,6 +151,8 @@ app.use("/api/applications", applicationRoutes);
 app.use("/api/saved-jobs", savedJobRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/ai", aiRoutes);
 
 const PORT = process.env.PORT || 5000;
 
