@@ -1,39 +1,37 @@
-import { Clock } from "lucide-react";
-
 export default function RecentActivity({ activities = [] }) {
   const getActivityColor = (type) => {
     switch (type) {
       case "application":
-        return "bg-blue-100 text-blue-600";
+        return "bg-sky-500";
       case "job":
-        return "bg-indigo-100 text-indigo-600";
+        return "bg-teal-600";
       case "user":
-        return "bg-purple-100 text-purple-600";
+        return "bg-violet-500";
       default:
-        return "bg-gray-100 text-gray-600";
+        return "bg-zinc-400";
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h2 className="text-xl font-bold text-gray-900 mb-6">Recent Activity</h2>
+    <div className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm">
+      <h2 className="text-lg font-semibold text-zinc-950">Recent Activity</h2>
 
       {activities.length > 0 ? (
-        <div className="space-y-4">
+        <div className="mt-5 divide-y divide-zinc-100">
           {activities.map((activity, index) => (
             <div
               key={index}
-              className="flex items-start gap-4 pb-4 border-b border-gray-200 last:border-0"
+              className="flex items-start gap-4 py-4 first:pt-0 last:pb-0"
             >
-              <div
-                className={`p-2 rounded-lg ${getActivityColor(activity.type)}`}
-              >
-                <Clock className="w-5 h-5" />
-              </div>
+              <span
+                className={`mt-2 h-2.5 w-2.5 rounded-full ${getActivityColor(activity.type)}`}
+              />
               <div className="flex-1">
-                <p className="font-semibold text-gray-900">{activity.title}</p>
-                <p className="text-sm text-gray-600">{activity.description}</p>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="font-medium text-zinc-950">{activity.title}</p>
+                <p className="mt-1 text-sm text-zinc-600">
+                  {activity.description}
+                </p>
+                <p className="mt-2 text-xs text-zinc-500">
                   {activity.timestamp}
                 </p>
               </div>
@@ -41,7 +39,9 @@ export default function RecentActivity({ activities = [] }) {
           ))}
         </div>
       ) : (
-        <p className="text-gray-600 text-center py-8">No recent activity</p>
+        <p className="py-8 text-center text-sm text-zinc-500">
+          No recent activity yet.
+        </p>
       )}
     </div>
   );
