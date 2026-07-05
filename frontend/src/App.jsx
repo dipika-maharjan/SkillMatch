@@ -18,6 +18,7 @@ import ProfileSettings from "./pages/ProfileSettings";
 import NotificationsSettings from "./pages/NotificationsSettings";
 import ChangePasswordSettings from "./pages/ChangePasswordSettings";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AdminRoute from "./routes/AdminRoute";
 import Home from "./pages/Home";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminJobs from "./pages/AdminJobs";
@@ -160,7 +161,9 @@ function App() {
         path="/admin/dashboard"
         element={
           <ProtectedRoute>
-            <AdminDashboard />
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
           </ProtectedRoute>
         }
       />
@@ -168,7 +171,9 @@ function App() {
         path="/admin/jobs"
         element={
           <ProtectedRoute>
-            <AdminJobs />
+            <AdminRoute>
+              <AdminJobs />
+            </AdminRoute>
           </ProtectedRoute>
         }
       />
@@ -176,7 +181,9 @@ function App() {
         path="/admin/applications"
         element={
           <ProtectedRoute>
-            <AdminApplications />
+            <AdminRoute>
+              <AdminApplications />
+            </AdminRoute>
           </ProtectedRoute>
         }
       />
@@ -184,7 +191,9 @@ function App() {
         path="/admin/users"
         element={
           <ProtectedRoute>
-            <AdminUsers />
+            <AdminRoute>
+              <AdminUsers />
+            </AdminRoute>
           </ProtectedRoute>
         }
       />
@@ -192,7 +201,9 @@ function App() {
         path="/admin/analytics"
         element={
           <ProtectedRoute>
-            <AdminAnalytics />
+            <AdminRoute>
+              <AdminAnalytics />
+            </AdminRoute>
           </ProtectedRoute>
         }
       />
