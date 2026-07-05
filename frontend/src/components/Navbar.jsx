@@ -1,20 +1,52 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Sparkles } from "lucide-react";
+import { Bell, Sparkles } from "lucide-react";
 import ProfileMenu from "./ProfileMenu";
+import { getUnreadNotificationCount } from "../services/api";
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const savedUser = JSON.parse(localStorage.getItem("user") || "null");
+    const loadAuth = () => {
+      const token = localStorage.getItem("token");
+      const savedUser = JSON.parse(localStorage.getItem("user") || "null");
 
-    if (token && token !== "null" && token !== "undefined") {
-      setIsAuthenticated(true);
-      setUser(savedUser);
-    }
+      if (token && token !== "null" && token !== "undefined") {
+        setIsAuthenticated(true);
+        setUser(savedUser);
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
+      }
+    };
+
+    const loadNotifications = async () => {
+      if (!localStorage.getItem("token")) return;
+      try {
+        const res = await getUnreadNotificationCount();
+        setUnreadCount(res.data?.unreadCount || 0);
+      } catch (err) {
+        console.error("Failed to load notification count", err);
+      }
+    };
+
+    loadAuth();
+    loadNotifications();
+
+    const handleStorage = () => {
+      loadAuth();
+      loadNotifications();
+    };
+
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("focus", loadNotifications);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("focus", loadNotifications);
+    };
   }, []);
 
   return (
@@ -66,9 +98,23 @@ export default function Navbar() {
           </nav>
 
           {/* Auth Buttons or Profile Menu */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {isAuthenticated ? (
-              <ProfileMenu user={user} />
+              <>
+                <Link
+                  to="/settings/notifications"
+                  className="relative flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:text-indigo-600"
+                  aria-label="Notifications"
+                >
+                  <Bell className="h-5 w-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-semibold text-white">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
+                </Link>
+                <ProfileMenu user={user} />
+              </>
             ) : (
               <>
                 <Link
