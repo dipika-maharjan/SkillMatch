@@ -1,4 +1,4 @@
-import { X, FileText, Mail, Phone, MapPin } from "lucide-react";
+import { X } from "lucide-react";
 
 export default function ApplicationDetailModal({
   isOpen,
@@ -9,116 +9,151 @@ export default function ApplicationDetailModal({
   if (!isOpen || !application) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-screen overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white">
-          <h2 className="text-2xl font-bold text-gray-900">
-            Application Details
-          </h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4">
+      <div className="max-h-screen w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-xl">
+        <div className="sticky top-0 flex items-center justify-between border-b border-zinc-200 bg-white p-5">
+          <h2 className="text-xl font-semibold text-zinc-950">Application Details</h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-gray-600 hover:bg-gray-100 transition"
+            className="rounded-md p-1.5 text-zinc-600 transition hover:bg-zinc-100"
+            aria-label="Close application details"
           >
-            <X className="w-6 h-6" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 space-y-6">
-          {/* Candidate Info */}
+        <div className="space-y-6 p-5">
+          <div className="rounded-lg border border-teal-100 bg-teal-50 p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-medium text-teal-800">
+                  Current Status
+                </p>
+                <p className="mt-1 text-lg font-semibold capitalize text-zinc-950">
+                  {application.status}
+                </p>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => onStatusChange(application._id, "pending")}
+                  className={`rounded-md px-3 py-2 text-sm font-semibold transition ${
+                    application.status === "pending"
+                      ? "bg-amber-600 text-white"
+                      : "bg-white text-amber-800 ring-1 ring-amber-200 hover:bg-amber-100"
+                  }`}
+                >
+                  Pending
+                </button>
+                <button
+                  onClick={() => onStatusChange(application._id, "accepted")}
+                  className={`rounded-md px-3 py-2 text-sm font-semibold transition ${
+                    application.status === "accepted"
+                      ? "bg-emerald-600 text-white"
+                      : "bg-white text-emerald-800 ring-1 ring-emerald-200 hover:bg-emerald-100"
+                  }`}
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => onStatusChange(application._id, "rejected")}
+                  className={`rounded-md px-3 py-2 text-sm font-semibold transition ${
+                    application.status === "rejected"
+                      ? "bg-rose-600 text-white"
+                      : "bg-white text-rose-800 ring-1 ring-rose-200 hover:bg-rose-100"
+                  }`}
+                >
+                  Reject
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div>
-            <h3 className="text-lg font-bold text-gray-900 mb-4">
+            <h3 className="mb-4 text-base font-semibold text-zinc-950">
               Candidate Information
             </h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <p className="text-sm text-gray-600">Full Name</p>
-                <p className="text-gray-900 font-semibold">
+                <p className="text-sm text-zinc-500">Full Name</p>
+                <p className="font-semibold text-zinc-950">
                   {application.candidateName}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Email</p>
-                <p className="text-gray-900 font-semibold flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
+                <p className="text-sm text-zinc-500">Email</p>
+                <p className="font-semibold text-zinc-950">
                   {application.candidateEmail}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Phone</p>
-                <p className="text-gray-900 font-semibold flex items-center gap-2">
-                  <Phone className="w-4 h-4" />
+                <p className="text-sm text-zinc-500">Phone</p>
+                <p className="font-semibold text-zinc-950">
                   {application.candidatePhone || "Not provided"}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Location</p>
-                <p className="text-gray-900 font-semibold flex items-center gap-2">
-                  <MapPin className="w-4 h-4" />
+                <p className="text-sm text-zinc-500">Location</p>
+                <p className="font-semibold text-zinc-950">
                   {application.candidateLocation || "Not provided"}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Job Info */}
-          <div className="border-t border-gray-200 pt-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">
+          <div className="border-t border-zinc-200 pt-6">
+            <h3 className="mb-4 text-base font-semibold text-zinc-950">
               Job Information
             </h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
-                <p className="text-sm text-gray-600">Position</p>
-                <p className="text-gray-900 font-semibold">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <p className="text-sm text-zinc-500">Position</p>
+                <p className="font-semibold text-zinc-950">
                   {application.jobTitle}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Company</p>
-                <p className="text-gray-900 font-semibold">
+                <p className="text-sm text-zinc-500">Company</p>
+                <p className="font-semibold text-zinc-950">
                   {application.company}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Location</p>
-                <p className="text-gray-900 font-semibold">
+                <p className="text-sm text-zinc-500">Location</p>
+                <p className="font-semibold text-zinc-950">
                   {application.jobLocation}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Cover Letter */}
-          <div className="border-t border-gray-200 pt-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">
+          <div className="border-t border-zinc-200 pt-6">
+            <h3 className="mb-4 text-base font-semibold text-zinc-950">
               Cover Letter
             </h3>
-            <div className="bg-gray-50 rounded-lg p-4 text-gray-700">
+            <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm leading-6 text-zinc-700">
               {application.coverLetter || "No cover letter provided"}
             </div>
           </div>
 
-          {/* Resume */}
           {application.resume && (
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Resume</h3>
+            <div className="border-t border-zinc-200 pt-6">
+              <h3 className="mb-4 text-base font-semibold text-zinc-950">
+                Resume
+              </h3>
               <a
                 href={application.resume}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-semibold"
+                className="font-semibold text-teal-700 hover:text-teal-800"
               >
-                <FileText className="w-5 h-5" />
                 View Resume
               </a>
             </div>
           )}
 
-          {/* Application Date */}
-          <div className="border-t border-gray-200 pt-6">
-            <p className="text-sm text-gray-600">Applied on</p>
-            <p className="text-gray-900 font-semibold">
+          <div className="border-t border-zinc-200 pt-6">
+            <p className="text-sm text-zinc-500">Applied on</p>
+            <p className="font-semibold text-zinc-950">
               {new Date(application.createdAt).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
@@ -127,50 +162,10 @@ export default function ApplicationDetailModal({
             </p>
           </div>
 
-          {/* Status Change */}
-          <div className="border-t border-gray-200 pt-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">
-              Update Status
-            </h3>
-            <div className="flex gap-3">
-              <button
-                onClick={() => onStatusChange(application._id, "pending")}
-                className={`flex-1 px-4 py-2 rounded-lg font-semibold transition ${
-                  application.status === "pending"
-                    ? "bg-yellow-600 text-white"
-                    : "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
-                }`}
-              >
-                Pending
-              </button>
-              <button
-                onClick={() => onStatusChange(application._id, "accepted")}
-                className={`flex-1 px-4 py-2 rounded-lg font-semibold transition ${
-                  application.status === "accepted"
-                    ? "bg-green-600 text-white"
-                    : "bg-green-100 text-green-800 hover:bg-green-200"
-                }`}
-              >
-                Accept
-              </button>
-              <button
-                onClick={() => onStatusChange(application._id, "rejected")}
-                className={`flex-1 px-4 py-2 rounded-lg font-semibold transition ${
-                  application.status === "rejected"
-                    ? "bg-red-600 text-white"
-                    : "bg-red-100 text-red-800 hover:bg-red-200"
-                }`}
-              >
-                Reject
-              </button>
-            </div>
-          </div>
-
-          {/* Close Button */}
-          <div className="border-t border-gray-200 pt-6">
+          <div className="border-t border-zinc-200 pt-6">
             <button
               onClick={onClose}
-              className="w-full px-6 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg font-semibold transition"
+              className="w-full rounded-md bg-zinc-200 px-6 py-2.5 font-semibold text-zinc-900 transition hover:bg-zinc-300"
             >
               Close
             </button>

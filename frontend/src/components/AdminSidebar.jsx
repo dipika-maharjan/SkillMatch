@@ -4,10 +4,8 @@ import {
   Briefcase,
   FileText,
   Users,
-  Settings,
   BarChart3,
   LogOut,
-  ChevronRight,
 } from "lucide-react";
 
 export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
@@ -19,7 +17,6 @@ export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
     { icon: FileText, label: "Applications", path: "/admin/applications" },
     { icon: Users, label: "Users", path: "/admin/users" },
     { icon: BarChart3, label: "Analytics", path: "/admin/analytics" },
-    { icon: Settings, label: "Settings", path: "/admin/settings" },
   ];
 
   const isActive = (path) => location.pathname === path;
