@@ -10,12 +10,18 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(() => {
-    return localStorage.getItem("rememberMe") === "true" && Boolean(localStorage.getItem("email"));
+    return (
+      localStorage.getItem("rememberMe") === "true" &&
+      Boolean(localStorage.getItem("email"))
+    );
   });
   const [feedback, setFeedback] = useState({ type: "", message: "" });
 
   const [formData, setFormData] = useState(() => ({
-    email: localStorage.getItem("rememberMe") === "true" ? localStorage.getItem("email") || "" : "",
+    email:
+      localStorage.getItem("rememberMe") === "true"
+        ? localStorage.getItem("email") || ""
+        : "",
     password: "",
   }));
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -77,7 +83,10 @@ export default function Login() {
       });
 
       setTimeout(() => {
-        navigate("/dashboard");
+        const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+        navigate(
+          storedUser?.role === "admin" ? "/admin/dashboard" : "/dashboard",
+        );
       }, 900);
     } catch (error) {
       const errorMessage =
@@ -96,9 +105,7 @@ export default function Login() {
   return (
     <div className="h-dvh overflow-hidden bg-slate-100 flex items-center justify-center px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4">
       <div className="h-full w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:rounded-3xl">
-
         <div className="grid h-full min-h-0 lg:grid-cols-2">
-
           {/* Left Section */}
           <div className="hidden min-h-0 lg:flex items-center justify-center p-6 xl:p-8">
             <img
@@ -110,12 +117,10 @@ export default function Login() {
 
           {/* Right Section */}
           <div className="relative flex min-h-0 items-center justify-center overflow-hidden bg-[#f8faff] px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
-
             {/* Blur Background */}
             <div className="absolute right-0 bottom-0 h-40 w-40 sm:h-56 sm:w-56 rounded-full bg-blue-200/60 blur-3xl pointer-events-none" />
 
             <div className="relative z-10 w-full max-w-sm sm:max-w-md">
-
               {/* Header */}
               <div className="mb-4 sm:mb-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-blue-700 mb-2">
@@ -133,7 +138,6 @@ export default function Login() {
 
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
-
                 {/* Email */}
                 <div>
                   <input
@@ -167,16 +171,10 @@ export default function Login() {
 
                   <button
                     type="button"
-                    onClick={() =>
-                      setShowPassword(!showPassword)
-                    }
+                    onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   >
-                    {showPassword ? (
-                      <EyeOff size={20} />
-                    ) : (
-                      <Eye size={20} />
-                    )}
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
 
@@ -186,9 +184,7 @@ export default function Login() {
                     <input
                       type="checkbox"
                       checked={rememberMe}
-                      onChange={(e) =>
-                        setRememberMe(e.target.checked)
-                      }
+                      onChange={(e) => setRememberMe(e.target.checked)}
                       className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
                     />
                     <span className="text-xs sm:text-sm text-gray-600">
@@ -207,23 +203,27 @@ export default function Login() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={loading || !formData.email.trim() || !formData.password.trim()}
-                  className={`w-full text-white font-semibold py-3 px-4 rounded-lg transition duration-200 mt-4 sm:mt-6 shadow-sm ${loading
+                  disabled={
+                    loading ||
+                    !formData.email.trim() ||
+                    !formData.password.trim()
+                  }
+                  className={`w-full text-white font-semibold py-3 px-4 rounded-lg transition duration-200 mt-4 sm:mt-6 shadow-sm ${
+                    loading
                       ? "bg-blue-400 cursor-not-allowed"
                       : "bg-blue-700 hover:bg-blue-800"
-                    }`}
+                  }`}
                 >
-                  {loading
-                    ? "Signing in..."
-                    : "Sign In"}
+                  {loading ? "Signing in..." : "Sign In"}
                 </button>
 
                 {feedback.message && (
                   <p
-                    className={`rounded-lg border px-4 py-3 text-sm leading-6 ${feedback.type === "success"
+                    className={`rounded-lg border px-4 py-3 text-sm leading-6 ${
+                      feedback.type === "success"
                         ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                         : "border-rose-200 bg-rose-50 text-rose-700"
-                      }`}
+                    }`}
                   >
                     {feedback.message}
                   </p>
@@ -233,7 +233,6 @@ export default function Login() {
               {/* Register Link */}
               <p className="text-center text-sm sm:text-base text-gray-600 mt-4 sm:mt-5">
                 Don't have an account?{" "}
-
                 <Link
                   to="/register"
                   className="text-blue-600 hover:underline font-medium"
@@ -241,7 +240,6 @@ export default function Login() {
                   Register now
                 </Link>
               </p>
-
             </div>
           </div>
         </div>

@@ -207,7 +207,6 @@ export default function ProfileSettings() {
       const hasNewAvatar =
         draft.avatarUrl && draft.avatarUrl.startsWith("data:");
       if (hasNewAvatar) {
-
         // Convert base64 to file and upload
         const base64Data = draft.avatarUrl;
         const mimeMatch = base64Data.match(/data:([^;]+)/);
@@ -284,10 +283,16 @@ export default function ProfileSettings() {
           },
         };
 
+        const storedUser = {
+          ...JSON.parse(localStorage.getItem("user") || "{}"),
+          ...updatedUser,
+          avatarUrl: avatarUrl || updatedUser.avatarUrl || profile.avatarUrl,
+        };
 
         setProfile(nextProfile);
         setShowEditor(false);
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+        localStorage.setItem("user", JSON.stringify(storedUser));
+        window.dispatchEvent(new Event("storage"));
         setShowSuccess(true);
       }
     } catch (err) {
@@ -329,7 +334,12 @@ export default function ProfileSettings() {
       showHeader={false}
     >
       <div className="mb-6 text-xs text-slate-500">
-        <Link to="/settings" className="font-medium text-slate-700 hover:text-indigo-600 transition">Settings</Link>
+        <Link
+          to="/settings"
+          className="font-medium text-slate-700 hover:text-indigo-600 transition"
+        >
+          Settings
+        </Link>
         <span className="mx-1">›</span>
         <span className="text-indigo-600">Account</span>
       </div>
