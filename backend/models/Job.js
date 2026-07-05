@@ -47,6 +47,29 @@ const jobSchema = mongoose.Schema(
       trim: true,
       default: "",
     },
+    jobImage: {
+      type: String,
+      default: "",
+    },
+    companyLogo: {
+      type: String,
+      default: "",
+    },
+    companyWebsite: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    companySize: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    companyDescription: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     skills: [
       {
         type: String,

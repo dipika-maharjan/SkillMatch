@@ -15,6 +15,56 @@ const adminOnly = (req, res, next) => {
   next();
 };
 
+const parseSalary = (salary = "") => {
+  const numbers = String(salary).match(/\d+/g) || [];
+  return {
+    salaryMin: Number(numbers[0] || 0),
+    salaryMax: Number(numbers[1] || numbers[0] || 0),
+  };
+};
+
+const normalizeJobPayload = (body) => {
+  const {
+    title,
+    company,
+    location,
+    salary,
+    description,
+    requirements,
+    type,
+    status,
+    category,
+    experienceLevel,
+    jobImage,
+    companyLogo,
+    companyWebsite,
+    companySize,
+    companyDescription,
+  } = body;
+  const { salaryMin, salaryMax } = parseSalary(salary);
+
+  return {
+    title,
+    company,
+    location,
+    description,
+    skills: requirements
+      ? requirements.split("\n").map((item) => item.trim()).filter(Boolean)
+      : [],
+    workType: type,
+    experienceLevel,
+    salaryMin,
+    salaryMax,
+    isActive: status === "active",
+    category: category || "General",
+    jobImage,
+    companyLogo,
+    companyWebsite,
+    companySize,
+    companyDescription,
+  };
+};
+
 // Apply auth middleware to all admin routes
 router.use(protect);
 router.use(adminOnly);
@@ -24,18 +74,19 @@ router.use(adminOnly);
 router.get("/stats", async (req, res) => {
   try {
     const totalUsers = await User.countDocuments();
-    const activeJobs = await Job.countDocuments({ status: "active" });
+    const activeJobs = await Job.countDocuments({ isActive: true });
     const totalApplications = await Application.countDocuments();
     const placements = await Application.countDocuments({ status: "accepted" });
 
     // Recent activity
     const recentActivity = await Application.find()
+      .populate("user", "fullname")
       .sort({ createdAt: -1 })
       .limit(5)
-      .select("candidateName jobTitle status createdAt");
+      .select("user jobTitle status createdAt");
 
     const activity = recentActivity.map((app) => ({
-      title: `New application from ${app.candidateName}`,
+      title: `New application from ${app.user?.fullname || "Unknown User"}`,
       description: `Applied for ${app.jobTitle}`,
       type: "application",
       timestamp: new Date(app.createdAt).toLocaleDateString(),
@@ -63,14 +114,17 @@ router.get("/jobs", async (req, res) => {
   try {
     const jobs = await Job.find()
       .sort({ createdAt: -1 })
-      .select("title company location status applications createdAt");
+      .select(
+        "title company location isActive createdAt description skills workType experienceLevel category salaryMin salaryMax jobImage companyLogo companyWebsite companySize companyDescription",
+      );
 
     // Count applications for each job
     const jobsWithCounts = await Promise.all(
       jobs.map(async (job) => {
-        const appCount = await Application.countDocuments({ jobId: job._id });
+        const appCount = await Application.countDocuments({ job: job._id });
         return {
           ...job.toObject(),
+          status: job.isActive ? "active" : "expired",
           applications: appCount,
         };
       }),
@@ -84,29 +138,7 @@ router.get("/jobs", async (req, res) => {
 
 router.post("/jobs", async (req, res) => {
   try {
-    const {
-      title,
-      company,
-      location,
-      salary,
-      description,
-      requirements,
-      type,
-      status,
-    } = req.body;
-
-    const newJob = new Job({
-      title,
-      company,
-      location,
-      description,
-      requirements: requirements.split("\n").filter((r) => r.trim()),
-      workType: type,
-      salaryMin: parseInt(salary?.split("-")[0]) || 0,
-      salaryMax: parseInt(salary?.split("-")[1]) || 0,
-      status: status || "active",
-      category: "General",
-    });
+    const newJob = new Job(normalizeJobPayload(req.body));
 
     const savedJob = await newJob.save();
     res.status(201).json(savedJob);
@@ -117,30 +149,9 @@ router.post("/jobs", async (req, res) => {
 
 router.put("/jobs/:id", async (req, res) => {
   try {
-    const {
-      title,
-      company,
-      location,
-      salary,
-      description,
-      requirements,
-      type,
-      status,
-    } = req.body;
-
     const job = await Job.findByIdAndUpdate(
       req.params.id,
-      {
-        title,
-        company,
-        location,
-        description,
-        requirements: requirements.split("\n").filter((r) => r.trim()),
-        workType: type,
-        salaryMin: parseInt(salary?.split("-")[0]) || 0,
-        salaryMax: parseInt(salary?.split("-")[1]) || 0,
-        status,
-      },
+      normalizeJobPayload(req.body),
       { new: true },
     );
 

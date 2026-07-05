@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Notification from "../models/Notification.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
 import crypto from "crypto";
@@ -283,6 +284,16 @@ const updateProfile = async (req, res) => {
     }
 
     await req.user.save();
+
+    await Notification.create({
+      user: req.user._id,
+      type: "profile",
+      title: "Profile Updated",
+      message: "Your profile information was updated successfully.",
+      actionUrl: "/settings/profile",
+      metadata: { updatedAt: new Date().toISOString() },
+    });
+
     console.log("Profile updated successfully for user:", req.user.email);
 
     return res.json({
@@ -373,6 +384,15 @@ const updateSettings = async (req, res) => {
     }
 
     await req.user.save();
+
+    await Notification.create({
+      user: req.user._id,
+      type: "settings",
+      title: "Settings Updated",
+      message: "Your notification and account settings were updated.",
+      actionUrl: "/settings",
+      metadata: { updatedAt: new Date().toISOString() },
+    });
 
     return res.json({
       message: "Settings updated successfully",

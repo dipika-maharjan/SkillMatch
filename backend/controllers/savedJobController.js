@@ -1,6 +1,7 @@
 import SavedJob from "../models/SavedJob.js";
 import Job from "../models/Job.js";
 import Resume from "../models/Resume.js";
+import Notification from "../models/Notification.js";
 
 const saveJob = async (req, res) => {
   try {
@@ -20,6 +21,15 @@ const saveJob = async (req, res) => {
     const savedJob = await SavedJob.create({
       user: req.user._id,
       job: job._id,
+    });
+
+    await Notification.create({
+      user: req.user._id,
+      type: "saved_job",
+      title: "Job Saved",
+      message: `You saved ${job.title} at ${job.company}.`,
+      actionUrl: "/saved-jobs",
+      metadata: { jobId: job._id },
     });
 
     return res.status(201).json(savedJob);
@@ -56,21 +66,28 @@ const getSavedJobs = async (req, res) => {
     let combinedSkills = [];
     if (req.user) {
       const user = req.user;
-      const resume = await Resume.findOne({ user: user._id, isActive: true }).sort({ uploadedAt: -1 });
+      const resume = await Resume.findOne({
+        user: user._id,
+        isActive: true,
+      }).sort({ uploadedAt: -1 });
       const profileSkills = user.skills || [];
-      const resumeSkills = resume ? (resume.skills || []) : [];
+      const resumeSkills = resume ? resume.skills || [] : [];
       combinedSkills = [...new Set([...profileSkills, ...resumeSkills])];
     }
 
     const savedJobs = savedJobsData.map((savedJob) => {
       let match = 0;
       const job = savedJob.job;
-      if (job && job.skills && job.skills.length > 0 && combinedSkills.length > 0) {
+      if (
+        job &&
+        job.skills &&
+        job.skills.length > 0 &&
+        combinedSkills.length > 0
+      ) {
         const matchedSkills = job.skills.filter((skill) =>
           combinedSkills.some(
-            (userSkill) =>
-              userSkill.toLowerCase() === skill.toLowerCase()
-          )
+            (userSkill) => userSkill.toLowerCase() === skill.toLowerCase(),
+          ),
         );
         match = Math.round((matchedSkills.length / job.skills.length) * 100);
       }
