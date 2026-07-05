@@ -136,9 +136,17 @@ export default function JobDetail() {
       <div className="max-w-6xl mx-auto px-6 sm:px-8 py-8">
         <div className="bg-white rounded-lg p-6 sm:p-8 shadow-sm mb-6">
           <div className="flex flex-col sm:flex-row items-start gap-6 mb-6">
-            <div className="w-16 h-16 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Briefcase className="w-8 h-8 text-indigo-700" />
-            </div>
+            {job.jobImage ? (
+              <img
+                src={job.jobImage}
+                alt={job.title}
+                className="h-20 w-28 flex-shrink-0 rounded-lg border border-gray-200 object-cover"
+              />
+            ) : (
+              <div className="w-16 h-16 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Briefcase className="w-8 h-8 text-indigo-700" />
+              </div>
+            )}
 
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-gray-900 mb-3">
@@ -261,15 +269,13 @@ export default function JobDetail() {
 
             <div className="bg-white rounded-lg p-6 sm:p-8 shadow-sm">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Key Responsibilities
+                Requirements
               </h2>
               <div className="space-y-4">
-                {[
-                  "Design user interfaces and interactions for web and mobile platforms.",
-                  "Collaborate with product and engineering teams to define and implement innovative solutions.",
-                  "Conduct user research and usability testing to gather feedback and iterate on designs.",
-                  "Create wireframes, prototypes, and high-fidelity mockups using Figma.",
-                ].map((item, idx) => (
+                {(job.skills?.length
+                  ? job.skills
+                  : ["No specific requirements listed."]
+                ).map((item, idx) => (
                   <div key={idx} className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                     <p className="text-gray-700 text-sm">{item}</p>
@@ -304,9 +310,17 @@ export default function JobDetail() {
               <h2 className="text-xl font-bold text-gray-900 mb-4">Company</h2>
 
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <Briefcase className="w-6 h-6 text-gray-600" />
-                </div>
+                {job.companyLogo ? (
+                  <img
+                    src={job.companyLogo}
+                    alt={job.company}
+                    className="h-12 w-12 rounded-lg border border-gray-200 object-contain p-1"
+                  />
+                ) : (
+                  <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                    <Briefcase className="w-6 h-6 text-gray-600" />
+                  </div>
+                )}
                 <div>
                   <h3 className="font-bold text-gray-900">{job.company}</h3>
                   <p className="text-xs text-gray-600">
@@ -328,7 +342,7 @@ export default function JobDetail() {
                 <div>
                   <p className="text-gray-600">Size</p>
                   <p className="font-semibold text-gray-900">
-                    {job.companySize || "100-500"}
+                    {job.companySize || "Not specified"}
                   </p>
                 </div>
                 <div>

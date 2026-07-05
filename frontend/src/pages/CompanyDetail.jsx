@@ -58,8 +58,8 @@ export default function CompanyDetail() {
   const companyName = formatCompanyName(company);
   const companyJobs = jobs.filter((jobItem) => jobItem.company === companyName);
   const companyInfo = companyJobs[0] || {};
-  const companyDescription = companyInfo.description
-    ? companyInfo.description
+  const companyDescription = companyInfo.companyDescription || companyInfo.description
+    ? companyInfo.companyDescription || companyInfo.description
     : `Explore open roles and company details for ${companyName}.`;
   const industry = companyInfo.category || "Design Software";
   const location = companyInfo.location || "Lalitpur, Nepal";
@@ -80,15 +80,23 @@ export default function CompanyDetail() {
       <div className="max-w-6xl mx-auto px-6 sm:px-8 py-8">
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 sm:p-8 shadow-sm mb-6 border border-gray-200">
           <div className="flex flex-col sm:flex-row items-start gap-6">
-            <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center flex-shrink-0 border-2 border-gray-200">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">
-                  {companyName.charAt(0) || "C"}
+            <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center flex-shrink-0 border-2 border-gray-200 overflow-hidden">
+              {companyInfo.companyLogo ? (
+                <img
+                  src={companyInfo.companyLogo}
+                  alt={companyName}
+                  className="h-full w-full object-contain p-2"
+                />
+              ) : (
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {companyName.charAt(0) || "C"}
+                  </div>
+                  <div className="text-xs text-blue-600">
+                    {companyName.slice(1, 2) || ""}
+                  </div>
                 </div>
-                <div className="text-xs text-blue-600">
-                  {companyName.slice(1, 2) || ""}
-                </div>
-              </div>
+              )}
             </div>
 
             <div className="flex-1">
@@ -109,11 +117,11 @@ export default function CompanyDetail() {
             </div>
 
             <a
-              href={companyInfo.website || "#"}
+              href={companyInfo.companyWebsite || companyInfo.website || "#"}
               target="_blank"
               rel="noreferrer"
               className={`flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg transition flex-shrink-0 ${
-                companyInfo.website
+                companyInfo.companyWebsite || companyInfo.website
                   ? "bg-indigo-600 text-white hover:bg-indigo-700"
                   : "bg-slate-100 text-slate-500 cursor-not-allowed"
               }`}
@@ -132,7 +140,9 @@ export default function CompanyDetail() {
               </h2>
               <div className="space-y-4 text-gray-700 text-sm leading-relaxed">
                 <p>{companyDescription}</p>
-                {companyInfo.description && <p>{companyInfo.description}</p>}
+                {companyInfo.companyDescription && (
+                  <p>{companyInfo.companyDescription}</p>
+                )}
               </div>
             </div>
           </div>
@@ -230,7 +240,7 @@ export default function CompanyDetail() {
                         {jobItem.title}
                       </h3>
                       <p className="text-xs text-gray-600 truncate">
-                        {jobItem.workType || "Full-time"} •{" "}
+                        {jobItem.workType || "Full-time"} {" | "}
                         {jobItem.location || "Remote"}
                       </p>
                     </div>

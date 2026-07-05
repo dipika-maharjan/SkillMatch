@@ -122,9 +122,9 @@ export default function Dashboard() {
 
             {/* Right Icons */}
             <div className="flex items-center gap-4">
-              <Link to="/settings/notifications" className="relative p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition">
+              <Link to="/settings/notifications" className="relative p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition flex items-center justify-center">
                 <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 border border-white rounded-full"></span>
               </Link>
               <ProfileMenu user={user} />
             </div>
