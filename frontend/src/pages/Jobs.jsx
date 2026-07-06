@@ -94,7 +94,7 @@ export default function Jobs() {
     };
 
     loadJobs();
-  }, [search, activeWorkType, page, sortBy]);
+  }, [search, activeWorkType, category, experienceLevel, page, sortBy]);
 
   useEffect(() => {
     const loadSavedIds = async () => {
@@ -112,8 +112,8 @@ export default function Jobs() {
   return (
     <div className="flex">
       <Sidebar />
-      <main className="flex-1 bg-gray-50 min-h-screen">
-        <div className="bg-white border-b border-gray-200 px-6 sm:px-8 py-6">
+      <main className="flex-1 bg-slate-50 min-h-screen">
+        <div className="bg-white border-b border-slate-200 px-6 sm:px-8 py-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Find Jobs</h1>
           <p className="text-gray-600 text-sm">
             Browse opportunities that match your skills and interests.
@@ -121,7 +121,7 @@ export default function Jobs() {
         </div>
 
         <div className="px-6 sm:px-8 py-6">
-          <div className="bg-white rounded-lg p-4 mb-6 shadow-sm">
+          <div className="bg-white rounded-lg border border-slate-200 p-4 mb-6 shadow-sm">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
               <div className="flex-1">
                 <div className="relative">
@@ -131,7 +131,7 @@ export default function Jobs() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search jobs, skills, companies..."
-                    className="w-full pl-10 pr-4 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder:text-slate-400 transition focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                   />
                 </div>
               </div>
@@ -140,14 +140,14 @@ export default function Jobs() {
                 <button
                   type="button"
                   onClick={() => setIsFilterOpen((open) => !open)}
-                  className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium text-sm whitespace-nowrap"
+                  className="flex items-center gap-2 px-4 py-2.5 border border-slate-300 rounded-lg text-slate-700 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 font-medium text-sm whitespace-nowrap transition"
                 >
                   <Sliders className="w-4 h-4" />
                   Filters
                 </button>
 
                 {isFilterOpen && (
-                  <div className="absolute right-0 top-full z-30 mt-3 w-[24rem] rounded-3xl border border-slate-200 bg-white p-5 shadow-xl">
+                  <div className="absolute right-0 top-full z-30 mt-3 w-[24rem] rounded-2xl border border-slate-200 bg-white p-5 shadow-xl shadow-slate-200/80">
                     <div className="space-y-5">
                       <div>
                         <p className="text-sm font-semibold text-gray-900 mb-3">
@@ -164,8 +164,8 @@ export default function Jobs() {
                               }}
                               className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                                 category === option
-                                  ? "bg-indigo-600 text-white"
-                                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                  ? "bg-indigo-600 text-white shadow-sm"
+                                  : "bg-slate-100 text-slate-700 hover:bg-indigo-50 hover:text-indigo-700"
                               }`}
                             >
                               {option}
@@ -189,8 +189,8 @@ export default function Jobs() {
                               }}
                               className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                                 experienceLevel === option
-                                  ? "bg-indigo-600 text-white"
-                                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                  ? "bg-indigo-600 text-white shadow-sm"
+                                  : "bg-slate-100 text-slate-700 hover:bg-indigo-50 hover:text-indigo-700"
                               }`}
                             >
                               {option}
@@ -214,8 +214,8 @@ export default function Jobs() {
                               }}
                               className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                                 workType === option.id
-                                  ? "bg-indigo-600 text-white"
-                                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                  ? "bg-indigo-600 text-white shadow-sm"
+                                  : "bg-slate-100 text-slate-700 hover:bg-indigo-50 hover:text-indigo-700"
                               }`}
                             >
                               {option.label}
@@ -233,14 +233,14 @@ export default function Jobs() {
                             setWorkType("all");
                             setPage(1);
                           }}
-                          className="rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                          className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                         >
                           Clear All
                         </button>
                         <button
                           type="button"
                           onClick={() => setIsFilterOpen(false)}
-                          className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+                          className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-700"
                         >
                           Apply Filters
                         </button>
@@ -286,7 +286,7 @@ export default function Jobs() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-700 transition focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               >
                 <option value="relevant">Most Relevant</option>
                 <option value="latest">Latest</option>
@@ -337,10 +337,10 @@ export default function Jobs() {
                 return (
                   <div
                     key={job._id}
-                    className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition border border-gray-200"
+                    className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition border border-slate-200 hover:border-indigo-200"
                   >
                     <div className="flex flex-col sm:flex-row gap-4">
-                      <div className="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm shadow-indigo-200">
                         <span className="text-white font-bold text-lg">
                           {initial}
                         </span>
@@ -353,7 +353,7 @@ export default function Jobs() {
                           </h3>
                           <div className="text-center">
                             <p className="text-lg font-bold text-emerald-500">
-                              {job.match || "0%"}
+                              {job.match !== undefined && job.match !== null ? `${job.match}%` : "0%"}
                             </p>
                             <p className="text-xs text-gray-500 font-semibold">
                               MATCH
@@ -380,8 +380,8 @@ export default function Jobs() {
                             }}
                             className={`p-2 rounded-lg transition ${
                               savedJobIds.includes(job._id)
-                                ? "bg-indigo-600 text-white"
-                                : "text-gray-400 hover:text-gray-600 bg-white"
+                                ? "bg-indigo-600 text-white shadow-sm"
+                                : "border border-slate-200 bg-white text-slate-400 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600"
                             }`}
                           >
                             <Bookmark className="w-5 h-5" />
@@ -415,7 +415,7 @@ export default function Jobs() {
 
                         <Link
                           to={`/jobs/${job._id}`}
-                          className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition text-sm"
+                          className="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg transition text-sm shadow-sm shadow-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         >
                           View Details
                         </Link>

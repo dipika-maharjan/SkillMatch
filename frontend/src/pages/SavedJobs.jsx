@@ -70,9 +70,9 @@ export default function SavedJobs() {
   return (
     <div className="flex">
       <Sidebar />
-      <main className="flex-1 bg-gray-50 min-h-screen">
+      <main className="flex-1 bg-slate-50 min-h-screen">
         {/* Page Header */}
-        <div className="bg-white border-b border-gray-200 px-6 sm:px-8 py-6">
+        <div className="bg-white border-b border-slate-200 px-6 sm:px-8 py-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Saved Jobs</h1>
           <p className="text-gray-600 text-sm">Jobs you've saved for later.</p>
         </div>
@@ -80,7 +80,7 @@ export default function SavedJobs() {
         {/* Main Content */}
         <div className="px-6 sm:px-8 py-6">
           {/* Filter Tabs */}
-          <div className="bg-white rounded-lg p-4 mb-6 shadow-sm flex flex-wrap gap-3 items-center justify-between">
+          <div className="bg-white rounded-lg border border-slate-200 p-4 mb-6 shadow-sm flex flex-wrap gap-3 items-center justify-between">
             <div className="flex flex-wrap gap-3">
               {filters.map((filter) => (
                 <button
@@ -88,8 +88,8 @@ export default function SavedJobs() {
                   onClick={() => setActiveFilter(filter.id)}
                   className={`px-4 py-2 rounded-full font-semibold text-sm transition whitespace-nowrap ${
                     activeFilter === filter.id
-                      ? "bg-indigo-600 text-white"
-                      : "text-gray-700 hover:bg-gray-100"
+                      ? "bg-indigo-600 text-white shadow-sm"
+                      : "text-slate-700 hover:bg-indigo-50 hover:text-indigo-700"
                   }`}
                 >
                   {filter.label}
@@ -109,7 +109,7 @@ export default function SavedJobs() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-700 transition focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               >
                 <option value="recent">Recently Added</option>
                 <option value="latest">Latest</option>
@@ -149,11 +149,11 @@ export default function SavedJobs() {
                 return (
                   <div
                     key={job._id}
-                    className="bg-white rounded-[32px] p-6 shadow-sm hover:shadow-md transition border border-gray-200"
+                    className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition border border-slate-200 hover:border-indigo-200"
                   >
                     <div className="flex flex-col sm:flex-row gap-4">
                       <div className="flex items-start gap-4 flex-1 min-w-0">
-                        <div className="w-14 h-14 bg-indigo-600 rounded-3xl flex items-center justify-center flex-shrink-0">
+                        <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm shadow-indigo-200">
                           <span className="text-white text-lg font-bold">
                             {initial}
                           </span>
@@ -189,7 +189,7 @@ export default function SavedJobs() {
 
                       <div className="flex flex-col items-start sm:items-end gap-3 sm:w-56">
                         <div className="rounded-full bg-emerald-50 px-4 py-2 text-emerald-700 text-sm font-semibold">
-                          {job.match ? `${job.match}% Match` : "Match unknown"}
+                          {job.match !== undefined && job.match !== null ? `${job.match}% Match` : "Match unknown"}
                         </div>
                         <div className="flex w-full gap-3">
                           <button
@@ -209,13 +209,13 @@ export default function SavedJobs() {
                                 );
                               }
                             }}
-                            className="inline-flex flex-1 items-center justify-center rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition"
+                            className="inline-flex flex-1 items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-200"
                           >
                             Remove
                           </button>
                           <Link
                             to={`/jobs/${job._id}`}
-                            className="inline-flex flex-1 items-center justify-center rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 transition"
+                            className="inline-flex flex-1 items-center justify-center rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                           >
                             View
                           </Link>
