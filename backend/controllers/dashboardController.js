@@ -78,7 +78,7 @@ const getDashboardData = async (req, res) => {
         role: user.role,
       },
       stats: {
-        resumeScore: resume ? (resume.matchScore || 85) : 0, 
+        resumeScore: resume ? (resume.matchScore ?? 85) : 0, 
         applications: applicationsCount,
         recommendations: recommendations.length,
         savedJobs: savedJobsCount,
@@ -90,7 +90,7 @@ const getDashboardData = async (req, res) => {
       ],
       resume: resume ? {
         fileName: resume.fileUrl ? resume.fileUrl.split("/").pop() : "Uploaded Resume",
-        score: resume.matchScore || 85,
+        score: resume.matchScore ?? 85,
       } : null,
     });
   } catch (error) {

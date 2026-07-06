@@ -391,7 +391,7 @@ router.post("/assistance", protect, async (req, res) => {
     }
 
     try {
-      const response = await getAIResponse({ messages });
+      const response = await getAIResponse({ messages, max_tokens: 700 });
       return res.status(200).json({ response });
     } catch (err) {
       console.warn(
