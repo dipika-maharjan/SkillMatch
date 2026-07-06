@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { Search, Bell, User, ArrowRight, FileText, Menu } from "lucide-react";
+import { Search, ArrowRight, FileText, Menu } from "lucide-react";
 import ProfileMenu from "../components/ProfileMenu";
-import API from "../services/api";
+import NotificationButton from "../components/NotificationButton";
+import API, { getUnreadNotificationCount } from "../services/api";
 
 const fallbackDashboard = {
   user: { fullname: "User" },
@@ -47,6 +48,7 @@ const fallbackDashboard = {
 export default function Dashboard() {
   const [dashboard, setDashboard] = useState(fallbackDashboard);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -90,14 +92,29 @@ export default function Dashboard() {
     fetchDashboard();
   }, []);
 
+  useEffect(() => {
+    const loadNotifications = async () => {
+      try {
+        const response = await getUnreadNotificationCount();
+        setUnreadCount(response.data?.unreadCount || 0);
+      } catch (err) {
+        console.error("Failed to load notification count", err);
+      }
+    };
+
+    loadNotifications();
+    window.addEventListener("focus", loadNotifications);
+    return () => window.removeEventListener("focus", loadNotifications);
+  }, []);
+
   const { user, stats, recommendations, skills, resume } = dashboard;
 
   return (
     <div className="flex">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <main className="flex-1 bg-gray-50 min-h-screen">
+      <main className="flex-1 bg-slate-50 min-h-screen">
         {/* Top Bar */}
-        <div className="bg-white border-b border-gray-200 px-8 py-4 sticky top-0 z-40">
+        <div className="bg-white/95 border-b border-slate-200 px-8 py-4 sticky top-0 z-40 backdrop-blur">
           <div className="flex items-center justify-between gap-4">
             <button
               type="button"
@@ -115,17 +132,14 @@ export default function Dashboard() {
                 <input
                   type="text"
                   placeholder="Search for jobs, skills, companies..."
-                  className="w-full pl-10 pr-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-800 placeholder:text-slate-400 transition focus:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100"
                 />
               </div>
             </div>
 
             {/* Right Icons */}
             <div className="flex items-center gap-4">
-              <Link to="/settings/notifications" className="relative p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition flex items-center justify-center">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-2 right-2.5 w-2 h-2 bg-red-500 border border-white rounded-full"></span>
-              </Link>
+              <NotificationButton unreadCount={unreadCount} />
               <ProfileMenu user={user} />
             </div>
           </div>
@@ -145,25 +159,25 @@ export default function Dashboard() {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
               <p className="text-4xl font-bold text-gray-900 mb-2">
                 {stats.resumeScore}%
               </p>
               <p className="text-gray-600 text-sm">Resume Score</p>
             </div>
-            <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
               <p className="text-4xl font-bold text-gray-900 mb-2">
                 {stats.applications}
               </p>
               <p className="text-gray-600 text-sm">Applications</p>
             </div>
-            <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
               <p className="text-4xl font-bold text-gray-900 mb-2">
                 {stats.recommendations}
               </p>
               <p className="text-gray-600 text-sm">Recommendations</p>
             </div>
-            <div className="bg-white rounded-lg p-6 shadow-sm">
+            <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
               <p className="text-4xl font-bold text-gray-900 mb-2">
                 {stats.savedJobs}
               </p>
@@ -175,7 +189,7 @@ export default function Dashboard() {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Left Column - Top Job Matches */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg p-6 shadow-sm">
+              <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
                 <h2 className="text-xl font-bold text-gray-900 mb-6">
                   Top Job Matches
                 </h2>
@@ -184,11 +198,11 @@ export default function Dashboard() {
                   {recommendations.map((job, index) => (
                     <div
                       key={`${job.role}-${job.company}`}
-                      className="border border-gray-200 rounded-lg p-5"
+                      className="border border-slate-200 rounded-lg p-5 transition hover:border-indigo-200 hover:shadow-sm"
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-start gap-4 flex-1">
-                          <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0 ring-1 ring-indigo-100">
                             <span className="text-indigo-600 font-bold text-sm">
                               {job.company?.charAt(0) || index + 1}
                             </span>
@@ -209,7 +223,7 @@ export default function Dashboard() {
                           {job.match}% Match
                         </span>
                       </div>
-                      <button className="w-64 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2">
+                      <button className="w-64 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2 shadow-sm shadow-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                         <span>View Details</span>
                         <ArrowRight className="w-4 h-4" />
                       </button>
@@ -227,7 +241,7 @@ export default function Dashboard() {
             {/* Right Column - Profile Summary & Resume */}
             <div className="space-y-6">
               {/* Profile Summary */}
-              <div className="bg-white rounded-lg p-6 shadow-sm">
+              <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
                 <h2 className="text-xl font-bold text-gray-900 mb-6">
                   Profile Summary
                 </h2>
@@ -260,7 +274,7 @@ export default function Dashboard() {
               </div>
 
               {/* Resume Section */}
-              <div className="bg-white rounded-lg p-6 shadow-sm">
+              <div className="bg-white rounded-lg border border-slate-200 p-6 shadow-sm">
                 <h2 className="text-xl font-bold text-gray-900 mb-4">Resume</h2>
 
                 {resume ? (
