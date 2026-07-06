@@ -65,7 +65,7 @@ export default function ForgotPassword() {
                 Reset your password
               </h1>
               <p className="text-gray-600 text-lg leading-8">
-                We’ll email you a secure reset link so you can choose a new password.
+                We'll email you a secure reset link so you can choose a new password.
               </p>
             </div>
           </div>
@@ -81,7 +81,7 @@ export default function ForgotPassword() {
                   Forgot password
                 </h3>
                 <p className="text-sm sm:text-base text-gray-600">
-                  Enter your email and we’ll send you a reset link.
+                  Enter your email and we'll send you a reset link.
                 </p>
               </div>
 
