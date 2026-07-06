@@ -119,7 +119,7 @@ export default function NotificationsSettings() {
       title="Notifications"
       subtitle="Stay updated with your career progression and AI insights."
       rightContent={
-        <div className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-slate-900">Unread</p>
@@ -135,8 +135,8 @@ export default function NotificationsSettings() {
           <button
             type="button"
             onClick={handleMarkAll}
-            disabled={actionLoading}
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={actionLoading || unreadCount === 0}
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none"
           >
             <CheckCheck className="h-4 w-4" />
             Mark all as read
@@ -148,14 +148,14 @@ export default function NotificationsSettings() {
         <button
           type="button"
           onClick={() => setFilter("all")}
-          className={`rounded-full px-4 py-2 text-sm font-semibold ${filter === "all" ? "bg-indigo-600 text-white" : "bg-white text-slate-500 ring-1 ring-slate-200"}`}
+          className={`rounded-full px-4 py-2 text-sm font-semibold transition ${filter === "all" ? "bg-indigo-600 text-white shadow-sm" : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-indigo-50 hover:text-indigo-700"}`}
         >
           All
         </button>
         <button
           type="button"
           onClick={() => setFilter("unread")}
-          className={`rounded-full px-4 py-2 text-sm font-semibold ${filter === "unread" ? "bg-indigo-600 text-white" : "bg-white text-slate-500 ring-1 ring-slate-200"}`}
+          className={`rounded-full px-4 py-2 text-sm font-semibold transition ${filter === "unread" ? "bg-indigo-600 text-white shadow-sm" : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-indigo-50 hover:text-indigo-700"}`}
         >
           Unread
         </button>
@@ -163,7 +163,7 @@ export default function NotificationsSettings() {
 
       <div className="space-y-4">
         {loading ? (
-          <div className="rounded-3xl bg-white p-6 text-sm text-slate-500 ring-1 ring-slate-200">
+          <div className="rounded-2xl bg-white p-6 text-sm text-slate-500 ring-1 ring-slate-200">
             Loading notifications...
           </div>
         ) : visibleNotifications.length ? (
@@ -173,7 +173,7 @@ export default function NotificationsSettings() {
             return (
               <article
                 key={notification._id}
-                className="flex items-start gap-4 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200"
+                className={`flex items-start gap-4 rounded-2xl bg-white p-5 shadow-sm ring-1 transition hover:shadow-md ${notification.isRead ? "ring-slate-200" : "ring-indigo-100 bg-indigo-50/25"}`}
               >
                 <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
                   <Icon className="h-5 w-5" />
@@ -204,7 +204,8 @@ export default function NotificationsSettings() {
                       <button
                         type="button"
                         onClick={() => handleMarkRead(notification._id)}
-                        className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-600"
+                        disabled={actionLoading}
+                        className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100 disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         <EyeOff className="h-3.5 w-3.5" />
                         Mark read
@@ -213,7 +214,8 @@ export default function NotificationsSettings() {
                     <button
                       type="button"
                       onClick={() => handleDelete(notification._id)}
-                      className="inline-flex items-center gap-2 rounded-full bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-600"
+                      disabled={actionLoading}
+                      className="inline-flex items-center gap-2 rounded-full bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                       Delete
@@ -224,8 +226,8 @@ export default function NotificationsSettings() {
             );
           })
         ) : (
-          <div className="rounded-3xl bg-white p-10 text-center text-sm text-slate-500 ring-1 ring-slate-200">
-            You’re all caught up for now.
+          <div className="rounded-2xl bg-white p-10 text-center text-sm text-slate-500 ring-1 ring-slate-200">
+            You're all caught up for now.
           </div>
         )}
       </div>
