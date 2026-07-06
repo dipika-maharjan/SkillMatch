@@ -19,7 +19,7 @@ export default function SettingsShell({
   const isActive = (href) => location.pathname === href;
 
   return (
-    <div className="min-h-screen bg-[#f6f7fb]">
+    <div className="min-h-screen bg-slate-50">
       <div className="mx-auto flex min-h-screen max-w-[1600px]">
         <aside className="w-[250px] shrink-0 border-r border-slate-200 bg-white px-5 py-6">
           <Link to="/dashboard" className="mb-8 block text-lg font-bold text-indigo-600 hover:text-indigo-700 transition">
@@ -37,8 +37,8 @@ export default function SettingsShell({
                   to={item.href}
                   className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm transition ${
                     active
-                      ? "bg-indigo-50 font-semibold text-indigo-600"
-                      : "text-slate-700 hover:bg-slate-50"
+                      ? "bg-indigo-50 font-semibold text-indigo-700 ring-1 ring-indigo-100"
+                      : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
                   }`}
                 >
                   <Icon className="h-4 w-4" />

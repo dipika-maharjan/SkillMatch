@@ -63,7 +63,7 @@ export default function Sidebar({ isOpen = false, onClose = () => { } }) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-screen w-64 flex-col border-r border-gray-200 bg-gray-50 transition-transform lg:sticky lg:top-0 lg:z-auto lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed inset-y-0 left-0 z-50 flex h-screen w-64 flex-col border-r border-slate-200 bg-white transition-transform lg:sticky lg:top-0 lg:z-auto lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
       >
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-6">
@@ -74,7 +74,7 @@ export default function Sidebar({ isOpen = false, onClose = () => { } }) {
             type="button"
             aria-label="Close menu"
             onClick={onClose}
-            className="rounded-lg p-2 text-gray-600 hover:bg-gray-100 lg:hidden"
+            className="rounded-lg p-2 text-slate-600 transition hover:bg-indigo-50 hover:text-indigo-700 lg:hidden"
           >
             <X className="h-5 w-5" />
           </button>
@@ -91,8 +91,8 @@ export default function Sidebar({ isOpen = false, onClose = () => { } }) {
                 to={item.href}
                 onClick={onClose}
                 className={`flex items-center gap-3 rounded-lg px-4 py-3 transition-all ${active
-                    ? "bg-indigo-100 font-medium text-indigo-600"
-                    : "text-gray-700 hover:bg-gray-100"
+                    ? "bg-indigo-50 font-semibold text-indigo-700 ring-1 ring-indigo-100"
+                    : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
                   }`}
               >
                 <Icon className="h-5 w-5" />
@@ -105,12 +105,12 @@ export default function Sidebar({ isOpen = false, onClose = () => { } }) {
         <div className="border-t border-gray-200 px-4 py-6 space-y-4">
           <button
             onClick={() => setShowConfirmLogout(true)}
-            className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all"
+            className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-slate-700 transition-all hover:bg-rose-50 hover:text-rose-600"
           >
             <LogOut className="h-5 w-5" />
             <span>Log out</span>
           </button>
-          <p className="text-center text-xs text-gray-500">© 2026 SkillMatch</p>
+          <p className="text-center text-xs text-slate-500">Copyright 2026 SkillMatch</p>
         </div>
       </aside>
 
