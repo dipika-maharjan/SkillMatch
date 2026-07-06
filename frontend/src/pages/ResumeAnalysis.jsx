@@ -185,7 +185,7 @@ export default function ResumeAnalysis() {
     return (
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 min-h-screen bg-[#f7f7fb] flex items-center justify-center">
+        <main className="flex-1 min-h-screen bg-slate-50 flex items-center justify-center">
           <div className="text-sm text-slate-500">
             Loading your resume analysis...
           </div>
@@ -198,12 +198,12 @@ export default function ResumeAnalysis() {
     return (
       <div className="flex">
         <Sidebar />
-        <main className="flex-1 min-h-screen bg-[#f7f7fb] p-8">
-          <div className="mx-auto max-w-xl rounded-3xl bg-white p-8 shadow-sm ring-1 ring-black/5">
+        <main className="flex-1 min-h-screen bg-slate-50 p-8">
+          <div className="mx-auto max-w-xl rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
             <p className="text-center text-red-600">{error}</p>
             <button
               onClick={handleOpenResume}
-              className="mt-5 w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-700"
+              className="mt-5 w-full rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Back to resume
             </button>
@@ -216,7 +216,7 @@ export default function ResumeAnalysis() {
   return (
     <div className="flex">
       <Sidebar />
-      <main className="flex-1 min-h-screen bg-[#f7f7fb]">
+      <main className="flex-1 min-h-screen bg-slate-50">
         <div className="px-6 py-5 sm:px-8">
           <button
             onClick={handleOpenResume}
@@ -240,14 +240,14 @@ export default function ResumeAnalysis() {
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={handleDownloadReport}
-                className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
+                className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-100"
               >
                 <Download className="h-4 w-4" />
                 Download Report
               </button>
               <button
                 onClick={handleOpenResume}
-                className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700"
+                className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 <Upload className="h-4 w-4" />
                 Re-upload Resume
@@ -256,7 +256,7 @@ export default function ResumeAnalysis() {
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <section className="rounded-2xl border border-slate-300 bg-white p-6 shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <h2 className="text-lg font-bold text-slate-900">Match Score</h2>
               <div className="mt-5 flex items-center gap-6">
                 <div className="flex min-w-[100px] flex-col items-center justify-center text-center">
@@ -275,14 +275,11 @@ export default function ResumeAnalysis() {
                     Great job! Your resume is strong and aligns well with the
                     job requirements.
                   </p>
-                  <button className="mt-4 rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100">
-                    View Full Report
-                  </button>
                 </div>
               </div>
             </section>
 
-            <section className="rounded-2xl border border-slate-300 bg-white p-6 shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <h2 className="text-lg font-bold text-slate-900">
                 Skills Overview
               </h2>
@@ -322,7 +319,7 @@ export default function ResumeAnalysis() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-slate-300 bg-white p-6 shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <h2 className="text-lg font-bold text-slate-900">
                 Top Matched Skills
               </h2>
@@ -338,7 +335,7 @@ export default function ResumeAnalysis() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-slate-300 bg-white p-6 shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <h2 className="text-lg font-bold text-slate-900">
                 Suggestions to Improve
               </h2>
@@ -349,7 +346,7 @@ export default function ResumeAnalysis() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-slate-300 bg-white p-6 shadow-sm lg:col-span-1">
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-1">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-bold text-slate-900">
                   Skill Breakdown
@@ -391,7 +388,7 @@ export default function ResumeAnalysis() {
               </div>
             </section>
 
-            <section className="rounded-2xl border border-slate-300 bg-white p-6 shadow-sm lg:col-span-1">
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-1">
               <h2 className="text-lg font-bold text-slate-900">
                 Areas to Improve
               </h2>
@@ -431,7 +428,7 @@ export default function ResumeAnalysis() {
               </p>
               <button
                 onClick={() => setShowSuccessModal(false)}
-                className="mt-6 w-full rounded-lg bg-indigo-50 px-4 py-3 text-sm font-semibold text-indigo-700 hover:bg-indigo-100"
+                className="mt-6 w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 Done
               </button>

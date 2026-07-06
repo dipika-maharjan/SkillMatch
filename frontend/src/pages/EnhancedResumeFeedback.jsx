@@ -48,7 +48,7 @@ export default function EnhancedResumeFeedback() {
     <div className="flex">
       <Sidebar />
       <main className="flex-1 min-h-screen bg-[#f7f7fb] p-6 lg:p-10">
-        <div className="mx-auto max-w-6xl rounded-[32px] border border-slate-200 bg-white p-8 shadow-sm">
+        <div className="mx-auto max-w-6xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
           <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-3xl font-bold text-slate-900">
@@ -104,7 +104,7 @@ export default function EnhancedResumeFeedback() {
             </button>
           </form>
 
-          <div className="mt-10 rounded-[32px] border border-slate-200 bg-slate-50 p-6 shadow-sm">
+          <div className="mt-10 rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
             <div className="mb-4 flex items-center gap-3">
               <MessageSquare className="h-5 w-5 text-slate-600" />
               <h2 className="text-lg font-semibold text-slate-900">
