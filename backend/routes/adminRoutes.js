@@ -49,7 +49,10 @@ const normalizeJobPayload = (body) => {
     location,
     description,
     skills: requirements
-      ? requirements.split("\n").map((item) => item.trim()).filter(Boolean)
+      ? requirements
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean)
       : [],
     workType: type,
     experienceLevel,
@@ -190,7 +193,13 @@ router.get("/applications", async (req, res) => {
       jobLocation: app.job?.location,
       status: app.status,
       coverLetter: app.coverLetter,
+      portfolioUrl: app.portfolioUrl,
+      linkedinUrl: app.linkedinUrl,
       resume: app.resumeUrl,
+      resumeFileName: app.resumeFileName,
+      resumeText: app.resumeText,
+      userSkills: app.userSkills,
+      matchScore: app.matchScore,
       createdAt: app.appliedAt,
     }));
 
@@ -203,26 +212,46 @@ router.get("/applications", async (req, res) => {
 router.put("/applications/:id", async (req, res) => {
   try {
     const { status } = req.body;
+    const normalizeStatus = (value) => {
+      const normalized = String(value || "").toLowerCase();
+
+      switch (normalized) {
+        case "pending":
+        case "applied":
+          return "Applied";
+        case "reviewed":
+          return "Reviewed";
+        case "interview":
+          return "Interview";
+        case "accepted":
+          return "Accepted";
+        case "rejected":
+          return "Rejected";
+        default:
+          return value;
+      }
+    };
 
     const application = await Application.findByIdAndUpdate(
       req.params.id,
-      { status },
+      { status: normalizeStatus(status) },
       { new: true },
     );
 
     // Create notification for user
     if (application) {
+      const normalizedStatus = String(status || "").toLowerCase();
       const statusTitle =
-        status === "accepted"
+        normalizedStatus === "accepted"
           ? "Application Accepted"
-          : status === "rejected"
+          : normalizedStatus === "rejected"
             ? "Application Rejected"
             : "Application Status Updated";
 
       const statusMessage =
-        status === "accepted"
+        normalizedStatus === "accepted"
           ? "Your application has been accepted!"
-          : status === "rejected"
+          : normalizedStatus === "rejected"
             ? "Your application has been rejected."
             : "Your application status has been updated.";
 
