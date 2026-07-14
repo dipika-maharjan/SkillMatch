@@ -4,7 +4,9 @@ import api from "../services/api";
 import ApplicationDetailModal from "../components/admin/ApplicationDetailModal";
 
 export default function AdminApplications() {
-  const [user] = useState(() => JSON.parse(localStorage.getItem("user") || "null"));
+  const [user] = useState(() =>
+    JSON.parse(localStorage.getItem("user") || "null"),
+  );
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -71,11 +73,15 @@ export default function AdminApplications() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "accepted":
+      case "Accepted":
         return "bg-emerald-100 text-emerald-800";
-      case "rejected":
+      case "Rejected":
         return "bg-rose-100 text-rose-800";
-      case "pending":
+      case "Reviewed":
+        return "bg-sky-100 text-sky-800";
+      case "Interview":
+        return "bg-violet-100 text-violet-800";
+      case "Applied":
       default:
         return "bg-amber-100 text-amber-800";
     }
@@ -102,9 +108,11 @@ export default function AdminApplications() {
             className="min-h-11 rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-950 outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
           >
             <option value="all">All status</option>
-            <option value="pending">Pending</option>
-            <option value="accepted">Accepted</option>
-            <option value="rejected">Rejected</option>
+            <option value="Applied">Applied</option>
+            <option value="Reviewed">Reviewed</option>
+            <option value="Interview">Interview</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Accepted">Accepted</option>
           </select>
         </div>
       </div>
@@ -166,10 +174,18 @@ export default function AdminApplications() {
                       </td>
                       <td className="px-5 py-4">
                         <div className="flex flex-wrap gap-2">
-                          {["pending", "accepted", "rejected"].map((status) => (
+                          {[
+                            "Applied",
+                            "Reviewed",
+                            "Interview",
+                            "Rejected",
+                            "Accepted",
+                          ].map((status) => (
                             <button
                               key={status}
-                              onClick={() => handleStatusChange(app._id, status)}
+                              onClick={() =>
+                                handleStatusChange(app._id, status)
+                              }
                               className={`rounded-md px-2.5 py-1.5 text-xs font-semibold capitalize transition ${
                                 app.status === status
                                   ? getStatusColor(status)
@@ -201,7 +217,10 @@ export default function AdminApplications() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className="px-6 py-12 text-center text-sm text-zinc-500">
+                    <td
+                      colSpan="6"
+                      className="px-6 py-12 text-center text-sm text-zinc-500"
+                    >
                       No applications found.
                     </td>
                   </tr>
