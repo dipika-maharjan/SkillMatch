@@ -4,20 +4,11 @@ import {
   ArrowLeft,
   MapPin,
   ExternalLink,
-  Heart,
-  Laptop,
-  Clock,
-  TrendingUp,
   Briefcase,
+  Building2,
+  Sparkles,
 } from "lucide-react";
 import API from "../services/api";
-
-const benefits = [
-  { icon: Heart, label: "Health Insurance" },
-  { icon: Laptop, label: "Remote Work" },
-  { icon: Clock, label: "Flexible Hours" },
-  { icon: TrendingUp, label: "Learning Support" },
-];
 
 const formatCompanyName = (company = "") => decodeURIComponent(company);
 
@@ -37,8 +28,7 @@ export default function CompanyDetail() {
         const response = await API.get("/jobs", {
           params: { search: formatCompanyName(company), limit: 20 },
         });
-        const fetchedJobs = response.data.jobs || [];
-        setJobs(fetchedJobs);
+        setJobs(response.data.jobs || []);
       } catch (err) {
         setError(
           err.response?.data?.message ||
@@ -58,194 +48,244 @@ export default function CompanyDetail() {
   const companyName = formatCompanyName(company);
   const companyJobs = jobs.filter((jobItem) => jobItem.company === companyName);
   const companyInfo = companyJobs[0] || {};
-  const companyDescription = companyInfo.companyDescription || companyInfo.description
-    ? companyInfo.companyDescription || companyInfo.description
-    : `Explore open roles and company details for ${companyName}.`;
+  const companyDescription =
+    companyInfo.companyDescription ||
+    companyInfo.description ||
+    `Explore open roles and company details for ${companyName}.`;
+  const companyWebsite = companyInfo.companyWebsite || companyInfo.website;
   const industry = companyInfo.category || "Design Software";
   const location = companyInfo.location || "Lalitpur, Nepal";
   const remoteFriendly = companyInfo.workType !== "On-site";
+
+  if (loading) {
+    return (
+      <div className="bg-gray-100 min-h-screen flex items-center justify-center p-8">
+        <div className="rounded-3xl bg-white p-10 shadow-sm text-gray-600 border border-gray-200">
+          Loading company details...
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-gray-100 min-h-screen flex items-center justify-center p-8">
+        <div className="rounded-3xl bg-red-50 border border-red-200 p-10 shadow-sm text-red-700">
+          {error}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen">
       <div className="bg-white border-b border-gray-200 px-6 sm:px-8 py-4">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium text-sm mb-4"
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium text-sm"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to job detail
+          Back to jobs
         </button>
       </div>
 
       <div className="max-w-6xl mx-auto px-6 sm:px-8 py-8">
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 sm:p-8 shadow-sm mb-6 border border-gray-200">
-          <div className="flex flex-col sm:flex-row items-start gap-6">
-            <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center flex-shrink-0 border-2 border-gray-200 overflow-hidden">
-              {companyInfo.companyLogo ? (
-                <img
-                  src={companyInfo.companyLogo}
-                  alt={companyName}
-                  className="h-full w-full object-contain p-2"
-                />
-              ) : (
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {companyName.charAt(0) || "C"}
+        <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 sm:p-8 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-start gap-6">
+            <div className="flex items-start gap-4">
+              <div className="w-20 h-20 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                {companyInfo.companyLogo ? (
+                  <img
+                    src={companyInfo.companyLogo}
+                    alt={companyName}
+                    className="h-full w-full object-contain p-2"
+                  />
+                ) : (
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-indigo-700">
+                      {companyName.charAt(0) || "C"}
+                    </div>
+                    <div className="text-xs font-semibold text-indigo-600">
+                      {companyName.slice(1, 2) || ""}
+                    </div>
                   </div>
-                  <div className="text-xs text-blue-600">
-                    {companyName.slice(1, 2) || ""}
+                )}
+              </div>
+
+              <div>
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <h1 className="text-3xl font-bold text-gray-900">
+                    {companyName}
+                  </h1>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    {remoteFriendly ? "Remote Friendly" : "On-site Focused"}
+                  </span>
+                </div>
+                <p className="text-sm font-medium text-indigo-600 mb-3">
+                  {industry}
+                </p>
+                <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="w-4 h-4" />
+                    {location}
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Building2 className="w-4 h-4" />
+                    {companyJobs.length} open roles
                   </div>
                 </div>
-              )}
-            </div>
-
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900 mb-1">
-                {companyName}
-              </h1>
-              <p className="text-gray-600 text-sm mb-3">{industry}</p>
-
-              <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4" />
-                  {location}
-                </div>
-                <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">
-                  {remoteFriendly ? "Remote Friendly" : "On-site Focused"}
-                </span>
               </div>
             </div>
 
-            <a
-              href={companyInfo.companyWebsite || companyInfo.website || "#"}
-              target="_blank"
-              rel="noreferrer"
-              className={`flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg transition flex-shrink-0 ${
-                companyInfo.companyWebsite || companyInfo.website
-                  ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                  : "bg-slate-100 text-slate-500 cursor-not-allowed"
-              }`}
-            >
-              <span>Visit Website</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
+            <div className="flex flex-col sm:flex-row gap-3 lg:ml-auto">
+              <a
+                href={companyWebsite || "#"}
+                target="_blank"
+                rel="noreferrer"
+                className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
+                  companyWebsite
+                    ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                    : "bg-gray-100 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                <ExternalLink className="w-4 h-4" />
+                Visit Website
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {[
+              { label: "Industry", value: industry },
+              { label: "Location", value: location },
+              {
+                label: "Work Style",
+                value: remoteFriendly ? "Remote Friendly" : "On-site Focused",
+              },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl border border-gray-200 bg-gray-50 p-4"
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  {item.label}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-gray-900">
+                  {item.value}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-6">
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white rounded-lg p-6 sm:p-8 shadow-sm border border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 sm:p-8">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
                 About {companyName}
               </h2>
-              <div className="space-y-4 text-gray-700 text-sm leading-relaxed">
+              <div className="space-y-4 text-sm leading-7 text-gray-700">
                 <p>{companyDescription}</p>
-                {companyInfo.companyDescription && (
-                  <p>{companyInfo.companyDescription}</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6">
+              <div className="flex items-center gap-2 mb-5">
+                <Building2 className="w-5 h-5 text-indigo-600" />
+                <h2 className="text-lg font-bold text-gray-900">
+                  Company Snapshot
+                </h2>
+              </div>
+              <div className="space-y-4 text-sm text-gray-600">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Industry
+                  </p>
+                  <p className="mt-1 font-semibold text-gray-900">{industry}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Location
+                  </p>
+                  <p className="mt-1 font-semibold text-gray-900">{location}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Work Style
+                  </p>
+                  <p className="mt-1 font-semibold text-gray-900">
+                    {remoteFriendly ? "Remote Friendly" : "On-site Focused"}
+                  </p>
+                </div>
+                {companyWebsite && (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      Website
+                    </p>
+                    <a
+                      href={companyWebsite}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-1 inline-flex items-center gap-1 font-semibold text-indigo-600 hover:text-indigo-700"
+                    >
+                      Visit website <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
                 )}
               </div>
             </div>
           </div>
-
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">
-                Culture & Benefits
-              </h2>
-              <div className="grid grid-cols-2 gap-4">
-                {benefits.map((benefit, idx) => {
-                  const Icon = benefit.icon;
-                  return (
-                    <div key={idx} className="text-center">
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                        <Icon className="w-6 h-6 text-blue-600" />
-                      </div>
-                      <p className="text-xs font-medium text-gray-900 leading-tight">
-                        {benefit.label}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-900">Our Team</h2>
-                <button className="text-indigo-600 hover:text-indigo-700 text-sm font-semibold">
-                  View All
-                </button>
-              </div>
-              <div className="flex items-center gap-2 mb-3 -space-x-2">
-                {[
-                  { bg: "bg-red-500", initial: "A" },
-                  { bg: "bg-blue-500", initial: "B" },
-                  { bg: "bg-purple-500", initial: "C" },
-                  { bg: "bg-green-500", initial: "D" },
-                ].map((member, idx) => (
-                  <div
-                    key={idx}
-                    className={`w-10 h-10 ${member.bg} rounded-full flex items-center justify-center text-white text-sm font-bold border-2 border-white`}
-                  >
-                    {member.initial}
-                  </div>
-                ))}
-                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 text-xs font-bold border-2 border-white">
-                  +10
-                </div>
-              </div>
-              <p className="text-xs text-gray-600">
-                10 passionate designers and creators pushing boundaries
-              </p>
-            </div>
-          </div>
         </div>
 
-        <div className="bg-white rounded-lg p-6 sm:p-8 shadow-sm border border-gray-200">
-          <div className="flex items-center justify-between mb-6">
+        <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 sm:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-xl font-bold text-gray-900">
                 Open Positions
               </h2>
               <p className="text-sm text-slate-500">
                 Current openings at {companyName}
               </p>
             </div>
-            <span className="text-indigo-600 font-semibold text-sm">
-              {companyJobs.length} Listings
+            <span className="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-700">
+              {companyJobs.length} listings
             </span>
           </div>
+
           <div className="space-y-3">
             {loading ? (
               <p className="text-sm text-gray-500">Loading open positions...</p>
             ) : error ? (
               <p className="text-sm text-red-600">{error}</p>
             ) : companyJobs.length === 0 ? (
-              <p className="text-sm text-gray-500">
-                No open roles available yet.
-              </p>
+              <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-6 text-center text-sm text-gray-500">
+                No open roles are available for this company right now.
+              </div>
             ) : (
               companyJobs.map((jobItem) => (
                 <Link
                   key={jobItem._id}
                   to={`/jobs/${jobItem._id}`}
-                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 border border-gray-200 rounded-3xl hover:border-indigo-300 hover:bg-indigo-50 transition"
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl border border-gray-200 p-4 transition hover:border-indigo-300 hover:bg-indigo-50"
                 >
                   <div className="flex items-center gap-4 flex-1 min-w-0">
-                    <div className="w-12 h-12 bg-indigo-600 rounded-3xl flex items-center justify-center text-white font-bold flex-shrink-0">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-sm font-bold text-white flex-shrink-0">
                       {jobItem.title?.charAt(0) ?? "J"}
                     </div>
                     <div className="min-w-0">
-                      <h3 className="font-semibold text-gray-900 text-base truncate">
+                      <h3 className="truncate text-base font-semibold text-gray-900">
                         {jobItem.title}
                       </h3>
-                      <p className="text-xs text-gray-600 truncate">
-                        {jobItem.workType || "Full-time"} {" | "}
+                      <p className="truncate text-sm text-gray-600">
+                        {jobItem.workType || "Full-time"} •{" "}
                         {jobItem.location || "Remote"}
                       </p>
                     </div>
                   </div>
-                  <span className="text-indigo-600 hover:text-indigo-700 font-semibold text-sm whitespace-nowrap">
+                  <span className="text-sm font-semibold text-indigo-600">
                     View Job
                   </span>
                 </Link>

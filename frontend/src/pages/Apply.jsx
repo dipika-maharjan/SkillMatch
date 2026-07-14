@@ -85,7 +85,10 @@ export default function Apply() {
 
       const response = await API.post(`/applications/jobs/${jobId}/apply`, {
         coverLetter,
+        portfolioUrl: portfolio,
+        linkedinUrl: linkedin,
         resumeUrl: resume.fileUrl || "",
+        resumeFileName: resume.fileName || "",
         userSkills: resume.skills || [],
         resumeText: resume.rawText || "",
       });
