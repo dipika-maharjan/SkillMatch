@@ -38,10 +38,34 @@ const applicationSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    portfolioUrl: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    linkedinUrl: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     resumeUrl: {
       type: String,
       trim: true,
       default: "",
+    },
+    resumeFileName: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    resumeText: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    userSkills: {
+      type: [String],
+      default: [],
     },
     appliedAt: {
       type: Date,
