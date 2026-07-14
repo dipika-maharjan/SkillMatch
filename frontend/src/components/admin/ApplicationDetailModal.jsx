@@ -12,7 +12,9 @@ export default function ApplicationDetailModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4">
       <div className="max-h-screen w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-xl">
         <div className="sticky top-0 flex items-center justify-between border-b border-zinc-200 bg-white p-5">
-          <h2 className="text-xl font-semibold text-zinc-950">Application Details</h2>
+          <h2 className="text-xl font-semibold text-zinc-950">
+            Application Details
+          </h2>
           <button
             onClick={onClose}
             className="rounded-md p-1.5 text-zinc-600 transition hover:bg-zinc-100"
@@ -33,37 +35,58 @@ export default function ApplicationDetailModal({
                   {application.status}
                 </p>
               </div>
-              <div className="grid grid-cols-3 gap-2">
-                <button
-                  onClick={() => onStatusChange(application._id, "pending")}
-                  className={`rounded-md px-3 py-2 text-sm font-semibold transition ${
-                    application.status === "pending"
-                      ? "bg-amber-600 text-white"
-                      : "bg-white text-amber-800 ring-1 ring-amber-200 hover:bg-amber-100"
-                  }`}
-                >
-                  Pending
-                </button>
-                <button
-                  onClick={() => onStatusChange(application._id, "accepted")}
-                  className={`rounded-md px-3 py-2 text-sm font-semibold transition ${
-                    application.status === "accepted"
-                      ? "bg-emerald-600 text-white"
-                      : "bg-white text-emerald-800 ring-1 ring-emerald-200 hover:bg-emerald-100"
-                  }`}
-                >
-                  Accept
-                </button>
-                <button
-                  onClick={() => onStatusChange(application._id, "rejected")}
-                  className={`rounded-md px-3 py-2 text-sm font-semibold transition ${
-                    application.status === "rejected"
-                      ? "bg-rose-600 text-white"
-                      : "bg-white text-rose-800 ring-1 ring-rose-200 hover:bg-rose-100"
-                  }`}
-                >
-                  Reject
-                </button>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+                {[
+                  {
+                    value: "Applied",
+                    label: "Applied",
+                    active: "bg-amber-600 text-white",
+                    inactive:
+                      "bg-white text-amber-800 ring-1 ring-amber-200 hover:bg-amber-100",
+                  },
+                  {
+                    value: "Reviewed",
+                    label: "Reviewed",
+                    active: "bg-sky-600 text-white",
+                    inactive:
+                      "bg-white text-sky-800 ring-1 ring-sky-200 hover:bg-sky-100",
+                  },
+                  {
+                    value: "Interview",
+                    label: "Interview",
+                    active: "bg-violet-600 text-white",
+                    inactive:
+                      "bg-white text-violet-800 ring-1 ring-violet-200 hover:bg-violet-100",
+                  },
+                  {
+                    value: "Accepted",
+                    label: "Accept",
+                    active: "bg-emerald-600 text-white",
+                    inactive:
+                      "bg-white text-emerald-800 ring-1 ring-emerald-200 hover:bg-emerald-100",
+                  },
+                  {
+                    value: "Rejected",
+                    label: "Reject",
+                    active: "bg-rose-600 text-white",
+                    inactive:
+                      "bg-white text-rose-800 ring-1 ring-rose-200 hover:bg-rose-100",
+                  },
+                ].map((statusOption) => (
+                  <button
+                    key={statusOption.value}
+                    onClick={() =>
+                      onStatusChange(application._id, statusOption.value)
+                    }
+                    className={`rounded-md px-3 py-2 text-sm font-semibold transition ${
+                      application.status === statusOption.value
+                        ? statusOption.active
+                        : statusOption.inactive
+                    }`}
+                  >
+                    {statusOption.label}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
@@ -128,10 +151,55 @@ export default function ApplicationDetailModal({
 
           <div className="border-t border-zinc-200 pt-6">
             <h3 className="mb-4 text-base font-semibold text-zinc-950">
-              Cover Letter
+              Application Notes
             </h3>
-            <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm leading-6 text-zinc-700">
-              {application.coverLetter || "No cover letter provided"}
+            <div className="space-y-4 rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm leading-6 text-zinc-700">
+              <div>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                  Cover Letter
+                </p>
+                <p>{application.coverLetter || "No cover letter provided"}</p>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                    Portfolio
+                  </p>
+                  <p>
+                    {application.portfolioUrl ? (
+                      <a
+                        href={application.portfolioUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold text-teal-700 hover:text-teal-800"
+                      >
+                        Open portfolio
+                      </a>
+                    ) : (
+                      "Not provided"
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                    LinkedIn
+                  </p>
+                  <p>
+                    {application.linkedinUrl ? (
+                      <a
+                        href={application.linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold text-teal-700 hover:text-teal-800"
+                      >
+                        Open profile
+                      </a>
+                    ) : (
+                      "Not provided"
+                    )}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -140,14 +208,19 @@ export default function ApplicationDetailModal({
               <h3 className="mb-4 text-base font-semibold text-zinc-950">
                 Resume
               </h3>
-              <a
-                href={application.resume}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-teal-700 hover:text-teal-800"
-              >
-                View Resume
-              </a>
+              <div className="flex flex-col gap-2 rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-700">
+                <p className="font-semibold text-zinc-950">
+                  {application.resumeFileName || "Uploaded resume"}
+                </p>
+                <a
+                  href={application.resume}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-teal-700 hover:text-teal-800"
+                >
+                  View Resume
+                </a>
+              </div>
             </div>
           )}
 
