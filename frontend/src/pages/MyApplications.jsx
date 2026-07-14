@@ -7,16 +7,18 @@ import API from "../services/api";
 const statusTabs = [
   { key: "All", label: "All" },
   { key: "Applied", label: "Applied" },
-  { key: "Shortlisted", label: "Shortlisted" },
+  { key: "Reviewed", label: "Reviewed" },
   { key: "Interview", label: "Interview" },
   { key: "Rejected", label: "Rejected" },
+  { key: "Accepted", label: "Accepted" },
 ];
 
 const badgeClassMap = {
   Applied: "bg-emerald-100 text-emerald-700",
-  Shortlisted: "bg-indigo-100 text-indigo-700",
+  Reviewed: "bg-sky-100 text-sky-700",
   Interview: "bg-violet-100 text-violet-700",
   Rejected: "bg-rose-100 text-rose-700",
+  Accepted: "bg-indigo-100 text-indigo-700",
 };
 
 export default function MyApplications() {
@@ -51,9 +53,10 @@ export default function MyApplications() {
     const data = {
       All: applications.length,
       Applied: 0,
-      Shortlisted: 0,
+      Reviewed: 0,
       Interview: 0,
       Rejected: 0,
+      Accepted: 0,
     };
 
     applications.forEach((application) => {
