@@ -45,7 +45,10 @@ const createApplication = async (req, res) => {
     const { jobId } = req.params;
     const {
       coverLetter = "",
+      portfolioUrl = "",
+      linkedinUrl = "",
       resumeUrl = "",
+      resumeFileName = "",
       userSkills = [],
       resumeText = "",
     } = req.body;
@@ -92,7 +95,12 @@ const createApplication = async (req, res) => {
       company: job.company,
       jobTitle: job.title,
       coverLetter,
+      portfolioUrl,
+      linkedinUrl,
       resumeUrl: effectiveResumeUrl,
+      resumeFileName: resumeFileName || storedResume?.fileName || "",
+      resumeText: effectiveResumeText,
+      userSkills: effectiveUserSkills,
       matchScore,
     });
 
