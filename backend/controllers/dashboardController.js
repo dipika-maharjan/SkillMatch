@@ -102,9 +102,10 @@ const getDashboardData = async (req, res) => {
           : [{ skill: "Add skills to get matches", percentage: 0 }],
       resume: resume
         ? {
-            fileName: resume.fileUrl
+            fileName: resume.fileName || (resume.fileUrl
               ? resume.fileUrl.split("/").pop()
-              : "Uploaded Resume",
+              : "Uploaded Resume"),
+            fileUrl: resume.fileUrl,
             score: resume.matchScore ?? 85,
           }
         : null,

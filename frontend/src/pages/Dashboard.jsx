@@ -305,12 +305,17 @@ export default function Dashboard() {
 
                 {resume ? (
                   <>
-                    <div className="bg-gray-50 rounded-lg p-4 mb-4 flex items-center gap-3 border border-gray-100">
+                    <a
+                      href={resume.fileUrl ? getImageUrl(resume.fileUrl) : "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-gray-50 rounded-lg p-4 mb-4 flex items-center gap-3 border border-gray-100 hover:bg-gray-100 transition cursor-pointer"
+                    >
                       <FileText className="w-5 h-5 text-indigo-500" />
                       <span className="text-sm font-medium text-gray-900 truncate">
                         {resume.fileName}
                       </span>
-                    </div>
+                    </a>
                     <Link
                       to="/resume"
                       className="flex items-center justify-center w-full border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 font-semibold py-2 rounded-lg transition"
