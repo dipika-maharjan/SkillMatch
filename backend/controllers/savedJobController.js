@@ -59,7 +59,7 @@ const getSavedJobs = async (req, res) => {
       .populate({
         path: "job",
         select:
-          "title company location workType experienceLevel category salaryMin salaryMax description skills postedAt isActive",
+          "_id title company location workType experienceLevel category salaryMin salaryMax description skills postedAt isActive companyLogo jobImage",
       });
 
     // Calculate matches
