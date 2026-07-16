@@ -160,6 +160,27 @@ export default function ApplicationDetailModal({
                 </p>
                 <p>{application.coverLetter || "No cover letter provided"}</p>
               </div>
+              {application.coverLetterFileName && (
+                <div>
+                  <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                    Cover Letter File
+                  </p>
+                  {application.coverLetterUrl ? (
+                    <a
+                      href={application.coverLetterUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-teal-700 hover:text-teal-800"
+                    >
+                      {application.coverLetterFileName}
+                    </a>
+                  ) : (
+                    <p className="font-semibold text-zinc-950">
+                      {application.coverLetterFileName}
+                    </p>
+                  )}
+                </div>
+              )}
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">
