@@ -32,6 +32,15 @@ export default function JobDetail() {
 
   const [showSavePopup, setShowSavePopup] = useState(false);
 
+  const getImageUrl = (value) => {
+    if (!value) return null;
+    if (value.startsWith("http") || value.startsWith("data:")) return value;
+    const base = (
+      import.meta.env.VITE_API_URL || "http://localhost:5000"
+    ).replace(/\/$/, "");
+    return `${base}${value.startsWith("/") ? value : `/${value}`}`;
+  };
+
   useEffect(() => {
     const fetchJob = async () => {
       setLoading(true);
@@ -48,8 +57,8 @@ export default function JobDetail() {
       } catch (err) {
         setError(
           err.response?.data?.message ||
-            err.message ||
-            "Failed to load job details",
+          err.message ||
+          "Failed to load job details",
         );
       } finally {
         setLoading(false);
@@ -100,7 +109,7 @@ export default function JobDetail() {
     <div className="bg-gray-100 min-h-screen">
       <div className="bg-white border-b border-gray-200 px-6 sm:px-8 py-4">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/jobs")}
           className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium text-sm mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -138,7 +147,7 @@ export default function JobDetail() {
           <div className="flex flex-col sm:flex-row items-start gap-6 mb-6">
             {job.jobImage ? (
               <img
-                src={job.jobImage}
+                src={getImageUrl(job.jobImage)}
                 alt={job.title}
                 className="h-20 w-28 flex-shrink-0 rounded-lg border border-gray-200 object-cover"
               />
@@ -233,11 +242,10 @@ export default function JobDetail() {
                   console.error("Save toggle failed", err);
                 }
               }}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold transition ${
-                savedJobIds.includes(job._id)
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold transition ${savedJobIds.includes(job._id)
                   ? "border-2 border-indigo-600 bg-indigo-600 text-white"
                   : "border-2 border-gray-300 text-gray-700 hover:bg-gray-50"
-              }`}
+                }`}
             >
               {savedJobIds.includes(job._id) ? "Saved" : "Save"}
             </button>
@@ -312,7 +320,7 @@ export default function JobDetail() {
               <div className="flex items-center gap-3 mb-4">
                 {job.companyLogo ? (
                   <img
-                    src={job.companyLogo}
+                    src={getImageUrl(job.companyLogo)}
                     alt={job.company}
                     className="h-12 w-12 rounded-lg border border-gray-200 object-contain p-1"
                   />
