@@ -14,74 +14,97 @@ SkillMatch is a comprehensive, AI-powered full-stack web application designed to
 ## Screenshots
 
 ### Home
-![Home](https://placehold.co/800x450/4f46e5/ffffff?text=Home+Screenshot)
+
+![Home](frontend/src/assets/screenshots/homepage.png)
 
 ### Login
-![Login](https://placehold.co/800x450/4f46e5/ffffff?text=Login+Screenshot)
+
+![Login](frontend/src/assets/screenshots/login.png)
 
 ### Register
-![Register](https://placehold.co/800x450/4f46e5/ffffff?text=Register+Screenshot)
+
+![Register](frontend/src/assets/screenshots/register.png)
 
 ### Forgot Password
-![Forgot Password](https://placehold.co/800x450/4f46e5/ffffff?text=Forgot+Password+Screenshot)
+
+![Forgot Password](frontend/src/assets/screenshots/forgot-password.png)
 
 ### Dashboard
-![Dashboard](https://placehold.co/800x450/4f46e5/ffffff?text=Dashboard+Screenshot)
+
+![Dashboard](frontend/src/assets/screenshots/dashboard.png)
 
 ### Jobs
-![Jobs](https://placehold.co/800x450/4f46e5/ffffff?text=Jobs+Screenshot)
+
+![Jobs](frontend/src/assets/screenshots/jobs.png)
 
 ### Job Details
-![Job Details](https://placehold.co/800x450/4f46e5/ffffff?text=Job+Details+Screenshot)
+
+![Job Details](frontend/src/assets/screenshots/job-detail.png)
 
 ### Company Details
-![Company Details](https://placehold.co/800x450/4f46e5/ffffff?text=Company+Details+Screenshot)
+
+![Company Details](frontend/src/assets/screenshots/company-details.png)
 
 ### Applications
-![Applications](https://placehold.co/800x450/4f46e5/ffffff?text=Applications+Screenshot)
+
+![Applications](frontend/src/assets/screenshots/applications.png)
 
 ### Saved Jobs
-![Saved Jobs](https://placehold.co/800x450/4f46e5/ffffff?text=Saved+Jobs+Screenshot)
+
+![Saved Jobs](frontend/src/assets/screenshots/saved-jobs.png)
 
 ### Resume
-![Resume](https://placehold.co/800x450/4f46e5/ffffff?text=Resume+Screenshot)
+
+![Resume](frontend/src/assets/screenshots/resume.png)
 
 ### Resume Analysis
-![Resume Analysis](https://placehold.co/800x450/4f46e5/ffffff?text=Resume+Analysis+Screenshot)
+
+![Resume Analysis](frontend/src/assets/screenshots/resume-analysis.png)
 
 ### Settings
-![Settings](https://placehold.co/800x450/4f46e5/ffffff?text=Settings+Screenshot)
+
+![Settings](frontend/src/assets/screenshots/settings.png)
 
 ### Profile
-![Profile](https://placehold.co/800x450/4f46e5/ffffff?text=Profile+Screenshot)
+
+![Profile](frontend/src/assets/screenshots/profile.png)
 
 ### Notifications
-![Notifications](https://placehold.co/800x450/4f46e5/ffffff?text=Notifications+Screenshot)
+
+![Notifications](frontend/src/assets/screenshots/notifications.png)
 
 ### Change Password
-![Change Password](https://placehold.co/800x450/4f46e5/ffffff?text=Change+Password+Screenshot)
+
+![Change Password](frontend/src/assets/screenshots/change-password.png)
 
 ### AI Assistant
-![AI Assistant](https://placehold.co/800x450/4f46e5/ffffff?text=AI+Assistant+Screenshot)
+
+![AI Assistant](frontend/src/assets/screenshots/ai-assistant.png)
 
 ### Admin Dashboard
-![Admin Dashboard](https://placehold.co/800x450/4f46e5/ffffff?text=Admin+Dashboard+Screenshot)
+
+![Admin Dashboard](frontend/src/assets/screenshots/admin-dashboard.png)
 
 ### Admin User
-![Admin User](https://placehold.co/800x450/4f46e5/ffffff?text=Admin+User+Screenshot)
+
+![Admin User](frontend/src/assets/screenshots/admin-user.png)
 
 ### Admin Jobs
-![Admin Jobs](https://placehold.co/800x450/4f46e5/ffffff?text=Admin+Jobs+Screenshot)
+
+![Admin Jobs](frontend/src/assets/screenshots/admin-jobs.png)
 
 ### Admin Applications
-![Admin Applications](https://placehold.co/800x450/4f46e5/ffffff?text=Admin+Applications+Screenshot)
+
+![Admin Applications](frontend/src/assets/screenshots/admin-applications.png)
 
 ### Admin Analytics
-![Admin Analytics](https://placehold.co/800x450/4f46e5/ffffff?text=Admin+Analytics+Screenshot)
+
+![Admin Analytics](frontend/src/assets/screenshots/admin-analytics.png)
 
 ## Tech Stack
 
 ### Frontend
+
 - **Framework**: React 19 (built with Vite)
 - **Styling**: Tailwind CSS for responsive and modern UI
 - **Routing**: React Router DOM
@@ -90,6 +113,7 @@ SkillMatch is a comprehensive, AI-powered full-stack web application designed to
 - **HTTP Client**: Axios
 
 ### Backend
+
 - **Runtime Environment**: Node.js
 - **Framework**: Express.js
 - **Database**: MongoDB with Mongoose ORM
@@ -102,6 +126,7 @@ SkillMatch is a comprehensive, AI-powered full-stack web application designed to
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js (v18 or higher recommended)
 - MongoDB running locally or a MongoDB Atlas URI
 - An OpenRouter / Gemini API Key (for the AI resume parser)
@@ -109,16 +134,19 @@ SkillMatch is a comprehensive, AI-powered full-stack web application designed to
 ### Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone <repository-url>
    cd SkillMatch
    ```
 
 2. **Setup the Backend:**
+
    ```bash
    cd backend
    npm install
    ```
+
    - Create a `.env` file in the `backend` directory based on the following template:
      ```env
      PORT=5000
@@ -135,10 +163,12 @@ SkillMatch is a comprehensive, AI-powered full-stack web application designed to
      ```
 
 3. **Setup the Frontend:**
+
    ```bash
    cd ../frontend
    npm install
    ```
+
    - Start the development server:
      ```bash
      npm run dev
