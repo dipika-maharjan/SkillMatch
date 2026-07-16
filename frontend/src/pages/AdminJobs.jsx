@@ -1,17 +1,26 @@
 import { useCallback, useEffect, useState } from "react";
+import { CheckCircle2, AlertTriangle, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout";
 import api from "../services/api";
 import JobFormModal from "../components/admin/JobFormModal";
 
 export default function AdminJobs() {
-  const [user] = useState(() => JSON.parse(localStorage.getItem("user") || "null"));
+  const [user] = useState(() =>
+    JSON.parse(localStorage.getItem("user") || "null"),
+  );
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [showModal, setShowModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [modalState, setModalState] = useState({
+    type: null,
+    title: "",
+    message: "",
+    job: null,
+  });
 
   const fetchJobs = useCallback(async () => {
     try {
@@ -29,15 +38,38 @@ export default function AdminJobs() {
     return () => window.clearTimeout(timer);
   }, [fetchJobs]);
 
-  const handleDeleteJob = async (jobId) => {
-    if (confirm("Are you sure you want to delete this job?")) {
-      try {
-        await api.delete(`/admin/jobs/${jobId}`);
-        setJobs(jobs.filter((j) => j._id !== jobId));
-      } catch (error) {
-        console.error("Failed to delete job:", error);
-        alert("Failed to delete job");
-      }
+  const openDeleteConfirmation = (job) => {
+    setModalState({
+      type: "delete-confirm",
+      title: "Delete job?",
+      message: `Are you sure you want to delete "${job.title}"? This action cannot be undone.`,
+      job,
+    });
+  };
+
+  const handleDeleteJob = async () => {
+    const jobToDelete = modalState.job;
+    if (!jobToDelete) return;
+
+    try {
+      await api.delete(`/admin/jobs/${jobToDelete._id}`);
+      setJobs((currentJobs) =>
+        currentJobs.filter((job) => job._id !== jobToDelete._id),
+      );
+      setModalState({
+        type: "success",
+        title: "Job deleted",
+        message: "Job deleted successfully.",
+        job: null,
+      });
+    } catch (error) {
+      console.error("Failed to delete job:", error);
+      setModalState({
+        type: "success",
+        title: "Delete failed",
+        message: "Failed to delete job. Please try again.",
+        job: null,
+      });
     }
   };
 
@@ -59,10 +91,24 @@ export default function AdminJobs() {
         await api.post("/admin/jobs", jobData);
       }
       setShowModal(false);
-      fetchJobs();
+      setSelectedJob(null);
+      await fetchJobs();
+      setModalState({
+        type: "success",
+        title: selectedJob ? "Job updated" : "Job created",
+        message: selectedJob
+          ? "Job updated successfully."
+          : "Job created successfully.",
+        job: null,
+      });
     } catch (error) {
       console.error("Failed to save job:", error);
-      alert("Failed to save job");
+      setModalState({
+        type: "success",
+        title: "Action failed",
+        message: "Failed to save job. Please try again.",
+        job: null,
+      });
     }
   };
 
@@ -74,7 +120,8 @@ export default function AdminJobs() {
     return matchesSearch && matchesStatus;
   });
 
-  const getRequirements = (job) => job.skills?.filter(Boolean).slice(0, 3) || [];
+  const getRequirements = (job) =>
+    job.skills?.filter(Boolean).slice(0, 3) || [];
 
   return (
     <AdminLayout
@@ -167,7 +214,8 @@ export default function AdminJobs() {
                               {job.title}
                             </p>
                             <p className="mt-1 text-xs text-zinc-500">
-                              {job.location || "Remote"} {" | "} {job.workType || "Remote"} {" | "}{" "}
+                              {job.location || "Remote"} {" | "}{" "}
+                              {job.workType || "Remote"} {" | "}{" "}
                               {job.experienceLevel || "Junior"}
                             </p>
                             <p className="mt-1 text-xs text-zinc-500">
@@ -235,13 +283,12 @@ export default function AdminJobs() {
                       </td>
                       <td className="px-5 py-4">
                         <span
-                          className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${
-                            job.status === "active"
+                          className={`rounded-full px-2.5 py-1 text-xs font-semibold capitalize ${job.status === "active"
                               ? "bg-emerald-100 text-emerald-800"
                               : job.status === "expired"
                                 ? "bg-rose-100 text-rose-800"
                                 : "bg-amber-100 text-amber-800"
-                          }`}
+                            }`}
                         >
                           {job.status}
                         </span>
@@ -258,7 +305,7 @@ export default function AdminJobs() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDeleteJob(job._id)}
+                            onClick={() => openDeleteConfirmation(job)}
                             className="rounded-md border border-rose-200 px-3 py-1.5 text-sm font-medium text-rose-700 transition hover:bg-rose-50"
                           >
                             Delete
@@ -269,13 +316,98 @@ export default function AdminJobs() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="px-6 py-12 text-center text-sm text-zinc-500">
+                    <td
+                      colSpan="7"
+                      className="px-6 py-12 text-center text-sm text-zinc-500"
+                    >
                       No jobs found.
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {modalState.type && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-zinc-950/50 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                {modalState.type === "delete-confirm" ? (
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+                    <AlertTriangle className="h-5 w-5" />
+                  </div>
+                ) : (
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                    <CheckCircle2 className="h-5 w-5" />
+                  </div>
+                )}
+                <div>
+                  <h3 className="text-lg font-semibold text-zinc-950">
+                    {modalState.title}
+                  </h3>
+                  <p className="mt-1 text-sm text-zinc-600">
+                    {modalState.message}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() =>
+                  setModalState({
+                    type: null,
+                    title: "",
+                    message: "",
+                    job: null,
+                  })
+                }
+                className="rounded-md p-1 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-700"
+                aria-label="Close popup"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="mt-6 flex gap-3">
+              {modalState.type === "delete-confirm" ? (
+                <>
+                  <button
+                    onClick={() =>
+                      setModalState({
+                        type: null,
+                        title: "",
+                        message: "",
+                        job: null,
+                      })
+                    }
+                    className="flex-1 rounded-md border border-zinc-300 px-4 py-2.5 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100"
+                  >
+                    No
+                  </button>
+                  <button
+                    onClick={handleDeleteJob}
+                    className="flex-1 rounded-md bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-700"
+                  >
+                    Yes, Delete
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() =>
+                    setModalState({
+                      type: null,
+                      title: "",
+                      message: "",
+                      job: null,
+                    })
+                  }
+                  className="flex-1 rounded-md bg-teal-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-800"
+                >
+                  OK
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
