@@ -38,6 +38,15 @@ export default function SavedJobs() {
     return jobs;
   }, [activeFilter, sortBy, savedJobs]);
 
+  const getImageUrl = (value) => {
+    if (!value) return null;
+    if (value.startsWith("http") || value.startsWith("data:")) return value;
+    const base = (
+      import.meta.env.VITE_API_URL || "http://localhost:5000"
+    ).replace(/\/$/, "");
+    return `${base}${value.startsWith("/") ? value : `/${value}`}`;
+  };
+
   useEffect(() => {
     const fetchSavedJobs = async () => {
       setLoading(true);
@@ -46,16 +55,19 @@ export default function SavedJobs() {
       try {
         const response = await API.get("/saved-jobs");
         setSavedJobs(
-          (response.data.savedJobs || []).map((item) => ({
-            ...item.job,
-            savedAt: item.savedAt,
-          })),
+          (response.data.savedJobs || [])
+            .filter((item) => item.job && item.job._id)
+            .map((item) => ({
+              ...item.job,
+              savedAt: item.savedAt,
+              savedJobId: item._id,
+            })),
         );
       } catch (err) {
         setError(
           err.response?.data?.message ||
-            err.message ||
-            "Failed to load saved jobs",
+          err.message ||
+          "Failed to load saved jobs",
         );
       } finally {
         setLoading(false);
@@ -86,11 +98,10 @@ export default function SavedJobs() {
                 <button
                   key={filter.id}
                   onClick={() => setActiveFilter(filter.id)}
-                  className={`px-4 py-2 rounded-full font-semibold text-sm transition whitespace-nowrap ${
-                    activeFilter === filter.id
+                  className={`px-4 py-2 rounded-full font-semibold text-sm transition whitespace-nowrap ${activeFilter === filter.id
                       ? "bg-indigo-600 text-white shadow-sm"
                       : "text-slate-700 hover:bg-indigo-50 hover:text-indigo-700"
-                  }`}
+                    }`}
                 >
                   {filter.label}
                   {filter.count !== null && ` (${filter.count})`}
@@ -153,10 +164,18 @@ export default function SavedJobs() {
                   >
                     <div className="flex flex-col sm:flex-row gap-4">
                       <div className="flex items-start gap-4 flex-1 min-w-0">
-                        <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm shadow-indigo-200">
-                          <span className="text-white text-lg font-bold">
-                            {initial}
-                          </span>
+                        <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm shadow-indigo-200 overflow-hidden bg-indigo-50">
+                          {job.companyLogo ? (
+                            <img
+                              src={getImageUrl(job.companyLogo)}
+                              alt={job.company}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center bg-indigo-600 text-white text-lg font-bold">
+                              {initial}
+                            </div>
+                          )}
                         </div>
 
                         <div className="min-w-0 flex-1">
@@ -189,7 +208,9 @@ export default function SavedJobs() {
 
                       <div className="flex flex-col items-start sm:items-end gap-3 sm:w-56">
                         <div className="rounded-full bg-emerald-50 px-4 py-2 text-emerald-700 text-sm font-semibold">
-                          {job.match !== undefined && job.match !== null ? `${job.match}% Match` : "Match unknown"}
+                          {job.match !== undefined && job.match !== null
+                            ? `${job.match}% Match`
+                            : "Match unknown"}
                         </div>
                         <div className="flex w-full gap-3">
                           <button
