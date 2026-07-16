@@ -193,6 +193,8 @@ router.get("/applications", async (req, res) => {
       jobLocation: app.job?.location,
       status: app.status,
       coverLetter: app.coverLetter,
+      coverLetterUrl: app.coverLetterUrl,
+      coverLetterFileName: app.coverLetterFileName,
       portfolioUrl: app.portfolioUrl,
       linkedinUrl: app.linkedinUrl,
       resume: app.resumeUrl,
