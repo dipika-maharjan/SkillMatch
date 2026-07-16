@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import AdminLayout from "../components/AdminLayout";
 import api from "../services/api";
 import ApplicationDetailModal from "../components/admin/ApplicationDetailModal";
+import ConfirmModal from "../components/admin/ConfirmModal";
 
 export default function AdminApplications() {
   const [user] = useState(() =>
@@ -13,6 +14,12 @@ export default function AdminApplications() {
   const [filterStatus, setFilterStatus] = useState("all");
   const [showModal, setShowModal] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState(null);
+  const [confirmPayload, setConfirmPayload] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    action: null,
+  });
 
   const fetchApplications = useCallback(async () => {
     try {
@@ -46,16 +53,23 @@ export default function AdminApplications() {
     }
   };
 
-  const handleDeleteApplication = async (applicationId) => {
-    if (confirm("Are you sure you want to delete this application?")) {
-      try {
-        await api.delete(`/admin/applications/${applicationId}`);
-        setApplications(applications.filter((a) => a._id !== applicationId));
-      } catch (error) {
-        console.error("Failed to delete application:", error);
-        alert("Failed to delete application");
-      }
-    }
+  const handleDeleteApplication = (applicationId, candidateName) => {
+    setConfirmPayload({
+      isOpen: true,
+      title: "Delete application",
+      message: `Are you sure you want to delete ${candidateName}'s application? This action cannot be undone.`,
+      action: async () => {
+        try {
+          await api.delete(`/admin/applications/${applicationId}`);
+          setApplications((currentApplications) =>
+            currentApplications.filter((a) => a._id !== applicationId),
+          );
+        } catch (error) {
+          console.error("Failed to delete application:", error);
+          alert("Failed to delete application");
+        }
+      },
+    });
   };
 
   const handleViewApplication = (app) => {
@@ -206,7 +220,12 @@ export default function AdminApplications() {
                             View
                           </button>
                           <button
-                            onClick={() => handleDeleteApplication(app._id)}
+                            onClick={() =>
+                              handleDeleteApplication(
+                                app._id,
+                                app.candidateName,
+                              )
+                            }
                             className="rounded-md border border-rose-200 px-3 py-1.5 text-sm font-medium text-rose-700 transition hover:bg-rose-50"
                           >
                             Delete
@@ -230,6 +249,33 @@ export default function AdminApplications() {
           </div>
         </div>
       )}
+
+      <ConfirmModal
+        isOpen={confirmPayload.isOpen}
+        title={confirmPayload.title}
+        message={confirmPayload.message}
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={async () => {
+          if (confirmPayload.action) {
+            await confirmPayload.action();
+          }
+          setConfirmPayload({
+            isOpen: false,
+            title: "",
+            message: "",
+            action: null,
+          });
+        }}
+        onCancel={() =>
+          setConfirmPayload({
+            isOpen: false,
+            title: "",
+            message: "",
+            action: null,
+          })
+        }
+      />
 
       <ApplicationDetailModal
         isOpen={showModal}
