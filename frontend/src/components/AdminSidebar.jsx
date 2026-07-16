@@ -1,4 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
   LayoutDashboard,
   Briefcase,
@@ -7,9 +8,14 @@ import {
   BarChart3,
   LogOut,
 } from "lucide-react";
+import { logout } from "../services/api";
+import LogoutModal from "./LogoutModal";
 
 export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [showConfirmLogout, setShowConfirmLogout] = useState(false);
+  const [showSuccessLogout, setShowSuccessLogout] = useState(false);
 
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/admin/dashboard" },
@@ -20,6 +26,29 @@ export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
   ];
 
   const isActive = (path) => location.pathname === path;
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.error("Logout error", err);
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setShowConfirmLogout(false);
+      setShowSuccessLogout(true);
+    }
+  };
+
+  const handleReturnToLogin = () => {
+    setShowSuccessLogout(false);
+    navigate("/login");
+  };
+
+  const handleGoToHomepage = () => {
+    setShowSuccessLogout(false);
+    navigate("/");
+  };
 
   return (
     <>
@@ -72,11 +101,7 @@ export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
         {/* Footer */}
         <div className="p-4 border-t border-indigo-700">
           <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              localStorage.removeItem("user");
-              window.location.href = "/login";
-            }}
+            onClick={() => setShowConfirmLogout(true)}
             className="flex items-center gap-3 px-4 py-3 rounded-lg text-indigo-100 hover:bg-indigo-700 w-full transition"
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />
@@ -132,9 +157,8 @@ export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
         <div className="p-4 border-t border-indigo-700">
           <button
             onClick={() => {
-              localStorage.removeItem("token");
-              localStorage.removeItem("user");
-              window.location.href = "/login";
+              setShowConfirmLogout(true);
+              setSidebarOpen(false);
             }}
             className="flex items-center gap-3 px-4 py-3 rounded-lg text-indigo-100 hover:bg-indigo-700 w-full transition"
           >
@@ -143,6 +167,15 @@ export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
           </button>
         </div>
       </aside>
+
+      <LogoutModal
+        showConfirmLogout={showConfirmLogout}
+        showSuccessLogout={showSuccessLogout}
+        onConfirm={handleLogout}
+        onCancel={() => setShowConfirmLogout(false)}
+        onReturnToLogin={handleReturnToLogin}
+        onGoToHomepage={handleGoToHomepage}
+      />
     </>
   );
 }

@@ -1,9 +1,14 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import { logout } from "../services/api";
+import LogoutModal from "./LogoutModal";
 
 export default function AdminNavbar({ user }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showConfirmLogout, setShowConfirmLogout] = useState(false);
+  const [showSuccessLogout, setShowSuccessLogout] = useState(false);
+  const navigate = useNavigate();
 
   const links = [
     { label: "Dashboard", path: "/admin/dashboard" },
@@ -13,10 +18,27 @@ export default function AdminNavbar({ user }) {
     { label: "Analytics", path: "/admin/analytics" },
   ];
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.href = "/login";
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.error("Logout error", err);
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      setShowConfirmLogout(false);
+      setShowSuccessLogout(true);
+    }
+  };
+
+  const handleReturnToLogin = () => {
+    setShowSuccessLogout(false);
+    navigate("/login");
+  };
+
+  const handleGoToHomepage = () => {
+    setShowSuccessLogout(false);
+    navigate("/");
   };
 
   const navClass = ({ isActive }) =>
@@ -64,7 +86,7 @@ export default function AdminNavbar({ user }) {
             </div>
           </div>
           <button
-            onClick={logout}
+            onClick={() => setShowConfirmLogout(true)}
             className="hidden rounded-md border border-zinc-300 px-3 py-2 text-sm font-semibold text-zinc-700 transition hover:border-zinc-400 hover:bg-zinc-100 md:block"
           >
             Logout
@@ -74,7 +96,11 @@ export default function AdminNavbar({ user }) {
             className="rounded-md border border-zinc-300 p-2 text-zinc-700 transition hover:bg-zinc-100 md:hidden"
             aria-label="Toggle admin navigation"
           >
-            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {menuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </button>
         </div>
       </div>
@@ -93,7 +119,10 @@ export default function AdminNavbar({ user }) {
               </NavLink>
             ))}
             <button
-              onClick={logout}
+              onClick={() => {
+                setMenuOpen(false);
+                setShowConfirmLogout(true);
+              }}
               className="mt-2 rounded-md border border-zinc-300 px-3 py-2 text-left text-sm font-semibold text-zinc-700"
             >
               Logout
@@ -101,6 +130,15 @@ export default function AdminNavbar({ user }) {
           </nav>
         </div>
       )}
+
+      <LogoutModal
+        showConfirmLogout={showConfirmLogout}
+        showSuccessLogout={showSuccessLogout}
+        onConfirm={handleLogout}
+        onCancel={() => setShowConfirmLogout(false)}
+        onReturnToLogin={handleReturnToLogin}
+        onGoToHomepage={handleGoToHomepage}
+      />
     </header>
   );
 }
