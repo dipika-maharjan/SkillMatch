@@ -38,6 +38,16 @@ const applicationSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    coverLetterUrl: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    coverLetterFileName: {
+      type: String,
+      trim: true,
+      default: "",
+    },
     portfolioUrl: {
       type: String,
       trim: true,

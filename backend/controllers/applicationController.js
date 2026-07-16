@@ -53,6 +53,11 @@ const createApplication = async (req, res) => {
       resumeText = "",
     } = req.body;
 
+    const coverLetterUrl = req.file
+      ? `/uploads/applications/${req.file.filename}`
+      : "";
+    const coverLetterFileName = req.file?.originalname || "";
+
     const job = await Job.findById(jobId);
 
     if (!job) {
@@ -95,6 +100,8 @@ const createApplication = async (req, res) => {
       company: job.company,
       jobTitle: job.title,
       coverLetter,
+      coverLetterUrl,
+      coverLetterFileName,
       portfolioUrl,
       linkedinUrl,
       resumeUrl: effectiveResumeUrl,
