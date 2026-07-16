@@ -25,6 +25,8 @@ export default function Apply() {
   const [error, setError] = useState("");
   const [application, setApplication] = useState(null);
   const [resume, setResume] = useState(null);
+  const [coverLetterFile, setCoverLetterFile] = useState(null);
+  const [coverLetterFileName, setCoverLetterFileName] = useState("");
 
   const steps = [
     { number: 1, label: "Application Info" },
@@ -83,15 +85,25 @@ export default function Apply() {
         return;
       }
 
-      const response = await API.post(`/applications/jobs/${jobId}/apply`, {
-        coverLetter,
-        portfolioUrl: portfolio,
-        linkedinUrl: linkedin,
-        resumeUrl: resume.fileUrl || "",
-        resumeFileName: resume.fileName || "",
-        userSkills: resume.skills || [],
-        resumeText: resume.rawText || "",
-      });
+      const formData = new FormData();
+      formData.append("coverLetter", coverLetter);
+      formData.append("portfolioUrl", portfolio);
+      formData.append("linkedinUrl", linkedin);
+      formData.append("resumeUrl", resume.fileUrl || "");
+      formData.append("resumeFileName", resume.fileName || "");
+      formData.append("userSkills", JSON.stringify(resume.skills || []));
+      formData.append("resumeText", resume.rawText || "");
+      if (coverLetterFile) {
+        formData.append("coverLetterFile", coverLetterFile);
+      }
+
+      const response = await API.post(
+        `/applications/jobs/${jobId}/apply`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        },
+      );
       setApplication(response.data);
       setCurrentStep(3);
     } catch (err) {
@@ -240,6 +252,28 @@ export default function Apply() {
                     <p className="text-xs text-gray-500 mt-2">
                       {coverLetter.length}/500 characters
                     </p>
+                  </div>
+
+                  <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-4">
+                    <label className="text-sm font-semibold text-gray-900 mb-2 block">
+                      Upload Cover Letter File
+                      <span className="text-gray-500"> (Optional)</span>
+                    </label>
+                    <input
+                      type="file"
+                      accept=".pdf,.txt,.doc,.docx"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        setCoverLetterFile(file);
+                        setCoverLetterFileName(file?.name || "");
+                      }}
+                      className="block w-full text-sm text-gray-600 file:mr-4 file:rounded-full file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100"
+                    />
+                    {coverLetterFileName && (
+                      <p className="mt-2 text-sm text-gray-600">
+                        Selected: {coverLetterFileName}
+                      </p>
+                    )}
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-6">
