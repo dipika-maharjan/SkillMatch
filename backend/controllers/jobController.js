@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Job from "../models/Job.js";
 import Resume from "../models/Resume.js";
 
@@ -139,6 +140,10 @@ const getJobs = async (req, res) => {
 
 const getJobById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+
     const job = await Job.findById(req.params.id);
 
     if (!job) {
