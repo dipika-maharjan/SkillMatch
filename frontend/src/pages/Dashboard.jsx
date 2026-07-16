@@ -109,6 +109,15 @@ export default function Dashboard() {
 
   const { user, stats, recommendations, skills, resume } = dashboard;
 
+  const getImageUrl = (value) => {
+    if (!value) return null;
+    if (value.startsWith("http") || value.startsWith("data:")) return value;
+    const base = (
+      import.meta.env.VITE_API_URL || "http://localhost:5000"
+    ).replace(/\/$/, "");
+    return `${base}${value.startsWith("/") ? value : `/${value}`}`;
+  };
+
   return (
     <div className="flex">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
@@ -202,11 +211,19 @@ export default function Dashboard() {
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-start gap-4 flex-1">
-                          <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0 ring-1 ring-indigo-100">
-                            <span className="text-indigo-600 font-bold text-sm">
-                              {job.company?.charAt(0) || index + 1}
-                            </span>
-                          </div>
+                          {job.companyLogo ? (
+                            <img
+                              src={getImageUrl(job.companyLogo)}
+                              alt={job.company}
+                              className="w-10 h-10 rounded-lg object-cover ring-1 ring-indigo-100"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center flex-shrink-0 ring-1 ring-indigo-100">
+                              <span className="text-indigo-600 font-bold text-sm">
+                                {job.company?.charAt(0) || index + 1}
+                              </span>
+                            </div>
+                          )}
                           <div>
                             <h3 className="font-semibold text-gray-900">
                               {job.role}
@@ -223,15 +240,21 @@ export default function Dashboard() {
                           {job.match}% Match
                         </span>
                       </div>
-                      <button className="w-64 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2 shadow-sm shadow-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                      <Link
+                        to={`/jobs/${job._id}`}
+                        className="w-64 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-lg transition flex items-center justify-center gap-2 shadow-sm shadow-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      >
                         <span>View Details</span>
                         <ArrowRight className="w-4 h-4" />
-                      </button>
+                      </Link>
                     </div>
                   ))}
                 </div>
 
-                <Link to="/jobs" className="mt-6 text-indigo-600 hover:text-indigo-700 font-semibold text-sm flex items-center gap-1 w-fit">
+                <Link
+                  to="/jobs"
+                  className="mt-6 text-indigo-600 hover:text-indigo-700 font-semibold text-sm flex items-center gap-1 w-fit"
+                >
                   View all jobs
                   <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -267,7 +290,10 @@ export default function Dashboard() {
                   ))}
                 </div>
 
-                <Link to="/settings/profile" className="mt-6 text-indigo-600 hover:text-indigo-700 font-semibold text-sm flex items-center gap-1 w-fit">
+                <Link
+                  to="/settings/profile"
+                  className="mt-6 text-indigo-600 hover:text-indigo-700 font-semibold text-sm flex items-center gap-1 w-fit"
+                >
                   View full profile
                   <ArrowRight className="w-4 h-4" />
                 </Link>
