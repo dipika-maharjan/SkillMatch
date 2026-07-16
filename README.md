@@ -14,70 +14,70 @@ SkillMatch is a comprehensive, AI-powered full-stack web application designed to
 ## Screenshots
 
 ### Home
-![Home](screenshots/home.png)
+![Home](https://placehold.co/800x450/4f46e5/ffffff?text=Home+Screenshot)
 
 ### Login
-![Login](screenshots/login.png)
+![Login](https://placehold.co/800x450/4f46e5/ffffff?text=Login+Screenshot)
 
 ### Register
-![Register](screenshots/register.png)
+![Register](https://placehold.co/800x450/4f46e5/ffffff?text=Register+Screenshot)
 
 ### Forgot Password
-![Forgot Password](screenshots/forgot-password.png)
+![Forgot Password](https://placehold.co/800x450/4f46e5/ffffff?text=Forgot+Password+Screenshot)
 
 ### Dashboard
-![Dashboard](screenshots/dashboard.png)
+![Dashboard](https://placehold.co/800x450/4f46e5/ffffff?text=Dashboard+Screenshot)
 
 ### Jobs
-![Jobs](screenshots/jobs.png)
+![Jobs](https://placehold.co/800x450/4f46e5/ffffff?text=Jobs+Screenshot)
 
 ### Job Details
-![Job Details](screenshots/job-details.png)
+![Job Details](https://placehold.co/800x450/4f46e5/ffffff?text=Job+Details+Screenshot)
 
 ### Company Details
-![Company Details](screenshots/company-details.png)
+![Company Details](https://placehold.co/800x450/4f46e5/ffffff?text=Company+Details+Screenshot)
 
 ### Applications
-![Applications](screenshots/applications.png)
+![Applications](https://placehold.co/800x450/4f46e5/ffffff?text=Applications+Screenshot)
 
 ### Saved Jobs
-![Saved Jobs](screenshots/saved-jobs.png)
+![Saved Jobs](https://placehold.co/800x450/4f46e5/ffffff?text=Saved+Jobs+Screenshot)
 
 ### Resume
-![Resume](screenshots/resume.png)
+![Resume](https://placehold.co/800x450/4f46e5/ffffff?text=Resume+Screenshot)
 
 ### Resume Analysis
-![Resume Analysis](screenshots/resume-analysis.png)
+![Resume Analysis](https://placehold.co/800x450/4f46e5/ffffff?text=Resume+Analysis+Screenshot)
 
 ### Settings
-![Settings](screenshots/settings.png)
+![Settings](https://placehold.co/800x450/4f46e5/ffffff?text=Settings+Screenshot)
 
 ### Profile
-![Profile](screenshots/profile.png)
+![Profile](https://placehold.co/800x450/4f46e5/ffffff?text=Profile+Screenshot)
 
 ### Notifications
-![Notifications](screenshots/notifications.png)
+![Notifications](https://placehold.co/800x450/4f46e5/ffffff?text=Notifications+Screenshot)
 
 ### Change Password
-![Change Password](screenshots/change-password.png)
+![Change Password](https://placehold.co/800x450/4f46e5/ffffff?text=Change+Password+Screenshot)
 
 ### AI Assistant
-![AI Assistant](screenshots/ai-assistant.png)
+![AI Assistant](https://placehold.co/800x450/4f46e5/ffffff?text=AI+Assistant+Screenshot)
 
 ### Admin Dashboard
-![Admin Dashboard](screenshots/admin-dashboard.png)
+![Admin Dashboard](https://placehold.co/800x450/4f46e5/ffffff?text=Admin+Dashboard+Screenshot)
 
 ### Admin User
-![Admin User](screenshots/admin-user.png)
+![Admin User](https://placehold.co/800x450/4f46e5/ffffff?text=Admin+User+Screenshot)
 
 ### Admin Jobs
-![Admin Jobs](screenshots/admin-jobs.png)
+![Admin Jobs](https://placehold.co/800x450/4f46e5/ffffff?text=Admin+Jobs+Screenshot)
 
 ### Admin Applications
-![Admin Applications](screenshots/admin-applications.png)
+![Admin Applications](https://placehold.co/800x450/4f46e5/ffffff?text=Admin+Applications+Screenshot)
 
 ### Admin Analytics
-![Admin Analytics](screenshots/admin-analytics.png)
+![Admin Analytics](https://placehold.co/800x450/4f46e5/ffffff?text=Admin+Analytics+Screenshot)
 
 ## Tech Stack
 
